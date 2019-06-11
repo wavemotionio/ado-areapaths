@@ -22,7 +22,6 @@ import {
 
 import { AreaPathsService } from './services/areaPaths.service';
 import { IterationPathsService } from './services/iterationPaths.service';
-import { RelationsService } from './services/relations.service';
 
 @NgModule({
   imports: [
@@ -43,6 +42,6 @@ import { RelationsService } from './services/relations.service';
     MatChipsModule,
   ],
   declarations: [HomeComponent, AreaPathsComponent, IterationPathsComponent],
-  providers: [AreaPathsService, IterationPathsService, RelationsService]
+  providers: [AreaPathsService, IterationPathsService]
 })
 export class WorkItemListModule { }
