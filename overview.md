@@ -1,0 +1,1 @@
+This extension allows you to navigate area paths in azure devops.
