@@ -1,0 +1,33 @@
+.example-tree-progress-bar {
+  margin-left: 30px;
+}
+
+.mat-tree-node {
+  padding: 0;
+  white-space: nowrap;
+}
+
+.open-in-browser {
+    color: #999;
+}
+
+.open-in-browser:hover {
+    color: #000;
+}
+
+.area-path, .iteration {
+    font-size: 80%;
+    color: #ddd;
+}
+
+.title {
+    margin-right: 2rem;
+}
+
+mat-tree-node {
+    border: 1px solid #eee;
+}
+
+.work-item-icons-list > .mat-icon {
+	margin-right: 10px;
+}

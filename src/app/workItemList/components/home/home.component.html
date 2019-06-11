@@ -1,0 +1,91 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>
+        Backlog Viewer
+        <br>
+        <small>{{message}}</small>
+    </h2>
+</div>
+<div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+<div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
+    <h4>No Data Found</h4>
+</div>
+<div *ngIf="!isLoading && dataSource.data?.length > 0">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <div fxLayout="column" fxLayoutAlign="center none" style="width:100%;">
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="work-item-icons-list">
+                        <mat-icon
+                            [ngClass]="{ 'background-epic': node.item.workItemType === 'Epic', 'background-feature': node.item.workItemType === 'Feature', 'background-pbi': node.item.workItemType === 'Product Backlog Item', 'background-task': node.item.workItemType === 'Task', 'background-bug': node.item.workItemType === 'Bug' }"
+                            >view_list
+                        </mat-icon>
+                        <span *ngIf="node.children && node.children.length > 0 && !treeControl.isExpanded(node)" matBadge="{{node.children.length}}" matBadgeOverlap="true" matBadgeColor="primary"></span>
+                        <button mat-icon-button disabled></button>
+                        <div fxLayout="column" fxLayoutAlign="center stretch">
+                            <span class="area-path">{{node.item.areaPath}}\</span>
+                            <span class="title">{{node.item.title}}</span>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end center">
+                        <div fxLayout="column" fxLayoutAlign="center stretch">
+                            <div fxLayout="row" fxLayoutAlign="space-evenly center">
+                                <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
+                                <mat-icon *ngIf="node.item.commentCount > 0 && treeControl.isExpanded(node)" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
+                                <button mat-icon-button>
+                                    <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">edit</mat-icon>
+                                </button>
+                            </div>
+                            <span class="iteration"> | {{node.item.iterationPath}} |</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+            <div fxLayout="column" fxLayoutAlign="center none" style="width:100%;">
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="work-item-icons-list">
+                        <mat-icon
+                            [ngClass]="{ 'background-epic': node.item.workItemType === 'Epic', 'background-feature': node.item.workItemType === 'Feature', 'background-pbi': node.item.workItemType === 'Product Backlog Item', 'background-task': node.item.workItemType === 'Task', 'background-bug': node.item.workItemType === 'Bug' }"
+                            >view_list
+                        </mat-icon>
+                        <span *ngIf="node.children && node.children.length > 0 && !treeControl.isExpanded(node)" matBadge="{{node.children.length}}" matBadgeOverlap="true" matBadgeColor="primary"></span>
+                        <button mat-icon-button
+                                [attr.aria-label]="'toggle ' + node.id"
+                                matTreeNodeToggle
+                                *ngIf="!treeControl.isExpanded(node)"
+                            ><mat-icon>
+                              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                            </mat-icon>
+                        </button>
+                        <div fxLayout="column" fxLayoutAlign="center stretch">
+                            <span class="area-path">{{node.item.areaPath}}\</span>
+                            <span class="title">{{node.item.title}}</span>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end center">
+                        <div fxLayout="column" fxLayoutAlign="center stretch">
+                            <div fxLayout="row" fxLayoutAlign="space-evenly center">
+                                <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
+                                <mat-icon *ngIf="node.item.commentCount > 0 && treeControl.isExpanded(node)" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
+                                <button mat-icon-button>
+                                    <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">edit</mat-icon>
+                                </button>
+                            </div>
+                            <span class="iteration"> | {{node.item.iterationPath}} |</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <mat-progress-bar 
+                        *ngIf="node.isLoading"
+                        mode="indeterminate"
+                        class="example-tree-progress-bar"
+                    ></mat-progress-bar>
+                </div>
+            </div>
+        </mat-tree-node>
+    </mat-tree>
+</div>

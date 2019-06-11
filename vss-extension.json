@@ -1,0 +1,69 @@
+{
+    "manifestVersion": 1,
+    "id": "ado-areapaths",
+    "publisher": "wavemotionio",
+    "version": "2.0.0",
+    "name": "Azure DevOps Area Paths",
+    "description": "This extension allows you to navigate area paths in azure devops.",
+    "public": false,
+    "categories": ["Azure Boards"],
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "feature-areapaths",
+            "type": "ms.vss-web.feature",
+            "description": "Show the new areaPaths and iterations hub in the Boards hub group",
+            "targets": [ "ms.vss-web.managed-features", "ms.vss-web.managed-features-onprem" ],
+            "properties": {
+                "name": "Feature AreaPaths",
+                "userConfigurable": true,
+                "hostConfigurable": true,
+                "defaultState": false
+            }
+        },
+        {
+            "id": "ado-areapaths",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "includes": [
+                "ms.vss-tfs-web.tfs-page-data-service",
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service",
+                "ms.vss-features.host-dialog-service"
+            ],
+            "properties": {
+                "name": "Area Paths",
+                "uri": "dist/index.html"
+            },
+            "constraints": [
+              {
+                "name": "Feature",
+                "properties": {
+                    "featureId": "wavemotionio.ado-areapaths.feature-areapaths"
+                }
+              }
+            ]
+        }
+    ],
+    "files": [
+        {
+            "path": "dist",
+            "addressable": true
+        },
+        {
+            "path": "node_modules/vss-web-extension-sdk/lib",
+            "addressable": true,
+            "packagePath": "lib"
+        }
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.code_write"
+    ]
+}
