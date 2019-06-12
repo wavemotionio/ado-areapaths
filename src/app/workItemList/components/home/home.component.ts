@@ -1,4 +1,4 @@
-import {Component, Injectable, Inject, OnInit} from '@angular/core';
+import {Component, Injectable, OnInit} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {CollectionViewer, SelectionChange} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs';
@@ -8,7 +8,7 @@ import {map} from 'rxjs/operators';
 import _ from 'lodash';
 import { RootDataSourceService } from "../../../shared/services/rootDataSource.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
