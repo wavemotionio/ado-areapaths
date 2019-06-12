@@ -181,7 +181,9 @@ export class DynamicDataSource {
 
                 this.data.splice(index + 1, 0, ...nodes);
 
-                this.dataChange.next(_.uniqWith(this.data, _.isEqual));
+                this.dataChange.next(_.reject(_.uniqWith(this.data, _.isEqual), (row) => {
+                    return _.includes(node.children, row.item.id);
+                }));
 
                 node.isLoading = false;
             });
