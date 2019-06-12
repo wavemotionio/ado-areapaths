@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build --prod && tfx extension create",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "test": "",
+    "lint": "",
+    "e2e": ""
   },
   "private": true,
   "dependencies": {
