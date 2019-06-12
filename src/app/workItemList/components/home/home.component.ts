@@ -261,10 +261,10 @@ export class HomeComponent implements OnInit {
             // this.database.setInitialQuery();
         } else if (_.isString(areaPath)) {
             this.rootDataSourceService.changeMessage('Area Path: ' + areaPath);
-            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
         } else if (_.isString(iterationPath)) {
             this.rootDataSourceService.changeMessage('Iteration Path: ' + iterationPath);
-            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.IterationPath] UNDER '${iterationPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.WorkItemType] ASC, [Microsoft.VSTS.Common.BacklogPriority] ASC, [System.AreaPath] ASC`);
+            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.IterationPath] UNDER '${iterationPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.WorkItemType] ASC, [Microsoft.VSTS.Common.BacklogPriority] ASC, [System.AreaPath] ASC`);
         } else if (_.isString(workItemId)) {
             this.rootDataSourceService.changeMessage('Work Item: ' + workItemId);
             this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.Id] = '${workItemId}'`);
