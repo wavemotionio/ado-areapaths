@@ -87,21 +87,29 @@ export class DynamicDatabase {
             client = getClient(WorkItemTrackingRestClient),
             queryResults = await client.queryByWiql({query}),
             wiIds = _.map(queryResults.workItems, workItem => (workItem.id)),
-            postRequest = {
+            chunks = _.chunk(wiIds, 199);
+
+        let allWorkItems = [];
+
+        for(let i=0; i<chunks.length; i++) {
+            const postRequest = {
                 $expand: 4,
                 asOf: null,
                 errorPolicy: 2,
                 fields: null,
-                ids: wiIds || []
+                ids: chunks[i] || []
             },
             workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [],
             workItemsListFormatted = this.formatWorkItems(workItemsList);
-        
-        let findAllChildIds = _.uniq(_.flatten(_.map(workItemsListFormatted, (workItem) => {
+
+            allWorkItems = _.concat(allWorkItems, workItemsListFormatted);
+        }
+
+        let findAllChildIds = _.uniq(_.flatten(_.map(allWorkItems, (workItem) => {
             return workItem.children;
         })));
 
-        const result = _.reject(_.map(workItemsListFormatted, workItem => (
+        const result = _.reject(_.map(allWorkItems, workItem => (
             new DynamicFlatNode(workItem.item, 0, !_.isEmpty(workItem.children), false, workItem.children)
         )), row => (_.includes(findAllChildIds, row.item.id)));
 
