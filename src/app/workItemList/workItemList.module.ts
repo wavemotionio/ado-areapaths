@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './components/home/home.component';
+import { LargeQueryWarning } from './components/home/home.component';
 import { AreaPathsComponent } from './components/areaPaths/areaPaths.component';
 import { IterationPathsComponent } from './components/iterationPaths/iterationPaths.component';
 import { routes } from './workItemList.routing';
@@ -12,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import {
     MatCheckboxModule,
@@ -40,8 +42,11 @@ import { IterationPathsService } from './services/iterationPaths.service';
     MatInputModule,
     MatTreeModule,
     MatChipsModule,
+    MatSnackBarModule
   ],
-  declarations: [HomeComponent, AreaPathsComponent, IterationPathsComponent],
-  providers: [AreaPathsService, IterationPathsService]
+  entryComponents: [LargeQueryWarning],
+  declarations: [HomeComponent, LargeQueryWarning, AreaPathsComponent, IterationPathsComponent],
+  providers: [AreaPathsService, IterationPathsService],
+  exports: [LargeQueryWarning]
 })
 export class WorkItemListModule { }

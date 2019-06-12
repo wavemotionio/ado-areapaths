@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class DynamicFlatNode {
   constructor(public item: any, public level: number = 1, public expandable: boolean = false, public isLoading: boolean = false, public children: any = []) {}
@@ -26,7 +27,7 @@ export class DynamicDatabase {
     isLoadingPage = this.isLoadingData.asObservable();
     headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    constructor(private httpClient: HttpClient) { }
+    constructor(private httpClient: HttpClient, private _snackBar: MatSnackBar) { }
 
     formatWorkItems(workItemsFilteredByParents: any): any {
         return _.map(workItemsFilteredByParents, (workItem) => {
@@ -91,6 +92,13 @@ export class DynamicDatabase {
 
         let allWorkItems = [];
 
+        if (wiIds.length > 1000) {
+            this._snackBar.openFromComponent(LargeQueryWarning, {
+              duration: 10000,
+              verticalPosition: 'top'
+            });
+        }
+
         for(let i=0; i<chunks.length; i++) {
             const postRequest = {
                 $expand: 4,
@@ -124,6 +132,13 @@ export class DynamicDatabase {
                 client = getClient(WorkItemTrackingRestClient),
                 chunks = _.chunk(node.children, 199);
             let allWorkItems = [];
+
+            if (node.children.length > 1000) {
+                this._snackBar.openFromComponent(LargeQueryWarning, {
+                  duration: 10000,
+                  verticalPosition: 'top'
+                });
+            }
 
             for(let i=0; i<chunks.length; i++) {
                 const childWorkItems = {
@@ -216,6 +231,13 @@ export class DynamicDataSource {
         }
     }
 }
+
+@Component({
+  selector: 'large-query-warning',
+  templateUrl: 'large-query-warning.html'
+})
+
+export class LargeQueryWarning {}
 
 @Component({
     selector: 'app-home',
