@@ -231,6 +231,7 @@ export class HomeComponent implements OnInit {
     constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, private _Activatedroute: ActivatedRoute) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
+        this.workItemStatesList['Needs Design'] = 'fiber_new';
         this.workItemStatesList['Reviewed'] = 'fiber_new';
         this.workItemStatesList['To Do'] = 'fiber_new';
 
@@ -242,6 +243,7 @@ export class HomeComponent implements OnInit {
         this.workItemStatesList['Validated in Lab'] = 'trending_up';
         this.workItemStatesList['Validated in QA'] = 'trending_up';
         this.workItemStatesList['Deployed to QA'] = 'trending_up';
+        this.workItemStatesList['QA Complete'] = 'trending_up';
 
         this.workItemStatesList['Failed'] = 'bug_report';
 
