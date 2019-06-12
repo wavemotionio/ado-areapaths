@@ -22,6 +22,10 @@ export class DynamicFlatNode {
 export class DynamicDatabase {
     private originalDataSource = new BehaviorSubject({});
     private isLoadingData = new BehaviorSubject(false);
+    private warning = {
+        message: 'Wait! This query includes over 1000 results. Go back and try a smaller query.',
+        subject: 'Warning'
+    };
 
     currentData = this.originalDataSource.asObservable();
     isLoadingPage = this.isLoadingData.asObservable();
@@ -93,7 +97,7 @@ export class DynamicDatabase {
         let allWorkItems = [];
 
         if (wiIds.length > 1000) {
-            this._snackBar.openFromComponent(LargeQueryWarning, {
+            this._snackBar.open(`${this.warning.message} (total: ${wiIds.length})`, this.warning.subject, {
               duration: 10000,
               verticalPosition: 'top'
             });
@@ -134,7 +138,7 @@ export class DynamicDatabase {
             let allWorkItems = [];
 
             if (node.children.length > 1000) {
-                this._snackBar.openFromComponent(LargeQueryWarning, {
+                this._snackBar.open(`${this.warning.message} (total: ${node.children.length})`, this.warning.subject, {
                   duration: 10000,
                   verticalPosition: 'top'
                 });
@@ -231,13 +235,6 @@ export class DynamicDataSource {
         }
     }
 }
-
-@Component({
-  selector: 'large-query-warning',
-  templateUrl: 'large-query-warning.html'
-})
-
-export class LargeQueryWarning {}
 
 @Component({
     selector: 'app-home',

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './components/home/home.component';
-import { LargeQueryWarning } from './components/home/home.component';
 import { AreaPathsComponent } from './components/areaPaths/areaPaths.component';
 import { IterationPathsComponent } from './components/iterationPaths/iterationPaths.component';
 import { routes } from './workItemList.routing';
@@ -44,9 +43,7 @@ import { IterationPathsService } from './services/iterationPaths.service';
     MatChipsModule,
     MatSnackBarModule
   ],
-  entryComponents: [LargeQueryWarning],
-  declarations: [HomeComponent, LargeQueryWarning, AreaPathsComponent, IterationPathsComponent],
-  providers: [AreaPathsService, IterationPathsService],
-  exports: [LargeQueryWarning]
+  declarations: [HomeComponent, AreaPathsComponent, IterationPathsComponent],
+  providers: [AreaPathsService, IterationPathsService]
 })
 export class WorkItemListModule { }

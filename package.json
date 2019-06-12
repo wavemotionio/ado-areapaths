@@ -1,6 +1,6 @@
 {
   "name": "ado-areapaths",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
