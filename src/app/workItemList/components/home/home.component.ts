@@ -230,13 +230,26 @@ export class HomeComponent implements OnInit {
 
     constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, private _Activatedroute: ActivatedRoute) {
         this.workItemStatesList['New'] = 'fiber_new';
-        this.workItemStatesList['Approved'] = 'thumb_up';
-        this.workItemStatesList['In Progress'] = 'trending_up';
-        this.workItemStatesList['Committed'] = 'group';
-        this.workItemStatesList['Development Complete'] = 'code';
-        this.workItemStatesList['Done'] = 'done';
-        this.workItemStatesList['Removed'] = 'delete_forever';
+        this.workItemStatesList['Ready for review'] = 'fiber_new';
+        this.workItemStatesList['Reviewed'] = 'fiber_new';
         this.workItemStatesList['To Do'] = 'fiber_new';
+
+        this.workItemStatesList['Approved'] = 'thumb_up';
+
+        this.workItemStatesList['In Progress'] = 'trending_up';
+        this.workItemStatesList['Committed'] = 'trending_up';
+        this.workItemStatesList['Development Complete'] = 'trending_up';
+        this.workItemStatesList['Validated in Lab'] = 'trending_up';
+        this.workItemStatesList['Validated in QA'] = 'trending_up';
+        this.workItemStatesList['Deployed to QA'] = 'trending_up';
+
+        this.workItemStatesList['Failed'] = 'bug_report';
+
+        this.workItemStatesList['Exception'] = 'cached';
+
+        this.workItemStatesList['Done'] = 'done';
+
+        this.workItemStatesList['Removed'] = 'delete_forever';
 
         this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
         this.dataSource = new DynamicDataSource(this.treeControl, database);
