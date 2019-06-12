@@ -175,15 +175,17 @@ export class DynamicDataSource {
             node.isLoading = true;
 
             this.database.getDynamicChildren(node).then(response => {
+                this.dataChange.next(_.reject(this.data, (row) => {
+                    return _.includes(node.children, row.item.id);
+                }));
+
                 const nodes = _.map(response, (childNode) => {
                     return new DynamicFlatNode(childNode.item, node.level + 1, this.database.isExpandable(childNode.children), false, childNode.children);
                 });
 
                 this.data.splice(index + 1, 0, ...nodes);
 
-                this.dataChange.next(_.reject(_.uniqWith(this.data, _.isEqual), (row) => {
-                    return _.includes(node.children, row.item.id);
-                }));
+                this.dataChange.next(_.uniqWith(this.data, _.isEqual));
 
                 node.isLoading = false;
             });
