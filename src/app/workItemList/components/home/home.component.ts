@@ -122,16 +122,24 @@ export class DynamicDatabase {
             const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
                 project = await projectService.getProject(),
                 client = getClient(WorkItemTrackingRestClient),
-                childWorkItems = {
-                    $expand: 4,
-                    asOf: null,
-                    errorPolicy: 2,
-                    fields: null,
-                    ids: node.children || []
-                },
-                getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name);
-            
-            return this.formatWorkItems(getChildrenDetails);
+                chunks = _.chunk(node.children, 199);
+            let allWorkItems = [];
+
+            for(let i=0; i<chunks.length; i++) {
+                const childWorkItems = {
+                        $expand: 4,
+                        asOf: null,
+                        errorPolicy: 2,
+                        fields: null,
+                        ids: chunks[i] || []
+                    },
+                    getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name),
+                    formattedChildDetails = this.formatWorkItems(getChildrenDetails);
+
+                allWorkItems = _.concat(allWorkItems, formattedChildDetails);
+            }
+
+            return allWorkItems;
         } else {
             return [];
         }
