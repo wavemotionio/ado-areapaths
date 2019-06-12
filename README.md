@@ -5,7 +5,7 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/wavemotionio/ado-areapaths.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wavemotionio/ado-areapaths/context:javascript)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/wavemotionio/ado-areapaths.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wavemotionio/ado-areapaths/alerts/)
 [![Known Vulnerabilities](https://snyk.io/test/github/wavemotionio/ado-areapaths/badge.svg?targetFile=package.json)](https://snyk.io/test/github/wavemotionio/ado-areapaths?targetFile=package.json)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a16842411d134d068e2d/maintainability)](https://codeclimate.com/github/wavemotionio/ado-areapaths/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d9e4684f0c9e34dda434/maintainability)](https://codeclimate.com/github/wavemotionio/ado-areapaths/maintainability)
 [![Inline docs](http://inch-ci.org/github/wavemotionio/ado-areapaths.svg?branch=master)](http://inch-ci.org/github/wavemotionio/ado-areapaths)
 
 # ado-areapaths ![GitHub package.json version](https://img.shields.io/github/package-json/v/wavemotionio/ado-areapaths.svg)
