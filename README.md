@@ -11,7 +11,7 @@
 # ado-areapaths ![GitHub package.json version](https://img.shields.io/github/package-json/v/wavemotionio/ado-areapaths.svg)
 
 ## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](https://github.com/wavemotionio/ado-areapaths/issues)
-So that you can view work items organized by area path or iteration path in Azure DevOps without creating and maintaining custom queries.
+So that you can view work items organized by area path or iteration path in Azure DevOps without creating and maintaining custom queries. * The feature flag defaults to false so the extension is hidden unless a user opts in. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps*
 
 ### References
 - https://docs.microsoft.com/en-us/azure/devops/extend/get-started/node?view=azure-devops

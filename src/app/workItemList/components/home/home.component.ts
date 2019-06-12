@@ -87,18 +87,23 @@ export class DynamicDatabase {
             client = getClient(WorkItemTrackingRestClient),
             queryResults = await client.queryByWiql({query}),
             wiIds = _.map(queryResults.workItems, workItem => (workItem.id)),
-            test = {
+            postRequest = {
                 $expand: 4,
                 asOf: null,
                 errorPolicy: 2,
                 fields: null,
                 ids: wiIds || []
             },
-            workItemsList = test.ids.length > 0 ? await client.getWorkItemsBatch(test, project.name) : [];
+            workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [],
+            workItemsListFormatted = this.formatWorkItems(workItemsList);
+        
+        let findAllChildIds = _.uniq(_.flatten(_.map(workItemsListFormatted, (workItem) => {
+            return workItem.children;
+        })));
 
-        const result = _.map(this.formatWorkItems(workItemsList), (workItem) => (
+        const result = _.reject(_.map(workItemsListFormatted, workItem => (
             new DynamicFlatNode(workItem.item, 0, !_.isEmpty(workItem.children), false, workItem.children)
-        ));
+        )), row => (_.includes(findAllChildIds, row.item.id)));
 
         this.isLoadingData.next(false);
         this.originalDataSource.next(result);
@@ -106,7 +111,6 @@ export class DynamicDatabase {
 
     async getDynamicChildren(node: any): Promise<any> {
         if (_.get(node, 'children.length') && node.children.length > 0) {
-            // returnValue = new Promise(async resolve => {
             const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
                 project = await projectService.getProject(),
                 client = getClient(WorkItemTrackingRestClient),

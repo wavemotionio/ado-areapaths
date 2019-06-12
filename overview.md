@@ -1,1 +1,1 @@
-This extension allows you to navigate area paths in azure devops.
+This extension allows you to navigate area paths in azure devops. The feature flag defaults to false so the extension is hidden unless a user opts in. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps
