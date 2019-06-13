@@ -130,38 +130,34 @@ export class DynamicDatabase {
     }
 
     async getDynamicChildren(node: any): Promise<any> {
-        if (_.get(node, 'children.length') && node.children.length > 0) {
-            const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
-                project = await projectService.getProject(),
-                client = getClient(WorkItemTrackingRestClient),
-                chunks = _.chunk(node.children, 199);
-            let allWorkItems = [];
+        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
+            project = await projectService.getProject(),
+            client = getClient(WorkItemTrackingRestClient),
+            chunks = _.chunk(node.children, 199);
+        let allWorkItems = [];
 
-            if (node.children.length > 1000) {
-                this._snackBar.open(`${this.warning.message} (total: ${node.children.length})`, this.warning.subject, {
-                  duration: 10000,
-                  verticalPosition: 'top'
-                });
-            }
-
-            for(let i=0; i<chunks.length; i++) {
-                const childWorkItems = {
-                        $expand: 4,
-                        asOf: null,
-                        errorPolicy: 2,
-                        fields: null,
-                        ids: chunks[i] || []
-                    },
-                    getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name),
-                    formattedChildDetails = this.formatWorkItems(getChildrenDetails);
-
-                allWorkItems = _.concat(allWorkItems, formattedChildDetails);
-            }
-
-            return allWorkItems;
-        } else {
-            return [];
+        if (node.children.length > 1000) {
+            this._snackBar.open(`${this.warning.message} (total: ${node.children.length})`, this.warning.subject, {
+                duration: 10000,
+                verticalPosition: 'top'
+            });
         }
+
+        for(let i=0; i<chunks.length; i++) {
+            const childWorkItems = {
+                    $expand: 4,
+                    asOf: null,
+                    errorPolicy: 2,
+                    fields: null,
+                    ids: chunks[i] || []
+                },
+                getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name),
+                formattedChildDetails = this.formatWorkItems(getChildrenDetails);
+
+            allWorkItems = _.concat(allWorkItems, formattedChildDetails);
+        }
+
+        return allWorkItems;
     }
 
     isExpandable(node: any): boolean {
