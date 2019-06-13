@@ -1,18 +1,16 @@
 import {Component, Injectable, OnInit} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {CollectionViewer, SelectionChange} from '@angular/cdk/collections';
-import {BehaviorSubject} from 'rxjs';
-import {Observable} from 'rxjs';
-import {merge} from 'rxjs';
+import {BehaviorSubject, Observable, merge } from 'rxjs';
 import {map} from 'rxjs/operators';
 import _ from 'lodash';
 import { RootDataSourceService } from "../../../shared/services/rootDataSource.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { formatWorkItems } from './formatWorkItems';
 
 export class DynamicFlatNode {
   constructor(public item: any, public level: number = 1, public expandable: boolean = false, public isLoading: boolean = false, public children: any = []) {}
@@ -29,60 +27,8 @@ export class DynamicDatabase {
 
     currentData = this.originalDataSource.asObservable();
     isLoadingPage = this.isLoadingData.asObservable();
-    headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    constructor(private httpClient: HttpClient, private _snackBar: MatSnackBar) { }
-
-    formatWorkItems(workItemsFilteredByParents: any): any {
-        return _.map(workItemsFilteredByParents, (workItem) => {
-            let workItemFinal = {},
-                workItemOptimized = _.mapValues(_.pick(workItem, ['fields', 'relations']), (propValue, propName) => { 
-                    let returnValue = {};
-
-                    returnValue['fields'] = _.pick(propValue, [
-                        'System.Id',
-                        'System.AreaPath',
-                        'System.CommentCount',
-                        'System.Description',
-                        'System.IterationPath',
-                        'System.State',
-                        'System.Title',
-                        'System.WorkItemType',
-                        'Microsoft.VSTS.Common.AcceptanceCriteria',
-                        'Microsoft.VSTS.Common.BacklogPriority',
-                        'Microsoft.VSTS.Common.Priority',
-                        'Microsoft.VSTS.Scheduling.Effort',
-                    ]);
-
-                    returnValue['relations'] = _.map(_.filter(propValue, (relation) => relation['rel'] === 'System.LinkTypes.Hierarchy-Forward'), (relation) => parseInt(relation['url'].split('/workItems/')[1], 0));
-
-                    return returnValue[propName] || propValue;
-                });
-
-            workItemFinal['item'] = _.mapKeys(workItemOptimized['fields'], (fieldValue, fieldKey) => {
-                const keyMap = {};
-                keyMap['System.AreaPath'] = 'areaPath';
-                keyMap['System.CommentCount'] = 'commentCount';
-                keyMap['System.Description'] = 'description';
-                keyMap['System.IterationPath'] = 'iterationPath';
-                keyMap['System.State'] = 'state';
-                keyMap['System.Title'] = 'title';
-                keyMap['System.WorkItemType'] = 'workItemType';
-                keyMap['Microsoft.VSTS.Common.AcceptanceCriteria'] = 'acceptanceCriteria';
-                keyMap['Microsoft.VSTS.Common.BacklogPriority'] = 'backlogPriority';
-                keyMap['Microsoft.VSTS.Common.Priority'] = 'priority';
-                keyMap['Microsoft.VSTS.Scheduling.Effort'] = 'effort';
-
-                return keyMap[fieldKey] || 'error';
-            });
-
-            workItemFinal['item'].id = workItemFinal['item'].id || workItem.id;
-
-            workItemFinal['children'] = workItemOptimized['relations'];
-
-            return workItemFinal;
-        });
-    }
+    constructor(private _snackBar: MatSnackBar) { }
 
     async setCustomWIQLQuery(query: string): Promise<void> {
         this.isLoadingData.next(true);
@@ -112,7 +58,7 @@ export class DynamicDatabase {
                 ids: chunks[i] || []
             },
             workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [],
-            workItemsListFormatted = this.formatWorkItems(workItemsList);
+            workItemsListFormatted = formatWorkItems(workItemsList);
 
             allWorkItems = _.concat(allWorkItems, workItemsListFormatted);
         }
@@ -152,7 +98,7 @@ export class DynamicDatabase {
                     ids: chunks[i] || []
                 },
                 getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name),
-                formattedChildDetails = this.formatWorkItems(getChildrenDetails);
+                formattedChildDetails = formatWorkItems(getChildrenDetails);
 
             allWorkItems = _.concat(allWorkItems, formattedChildDetails);
         }
