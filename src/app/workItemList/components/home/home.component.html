@@ -30,7 +30,7 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="end center">
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <div fxLayout="row" fxLayoutAlign="end center">
+                            <div fxLayout="row" fxLayoutAlign="end end">
                                 <mat-icon *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
                                 <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
                                 <button mat-icon-button>
@@ -67,7 +67,7 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="end center">
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <div fxLayout="row" fxLayoutAlign="end center">
+                            <div fxLayout="row" fxLayoutAlign="end end">
                                 <mat-icon *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
                                 <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
                                 <button mat-icon-button>
