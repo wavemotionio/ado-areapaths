@@ -30,11 +30,11 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="end center">
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <div fxLayout="row" fxLayoutAlign="space-evenly center">
-                                <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
+                            <div fxLayout="row" fxLayoutAlign="end center">
                                 <mat-icon *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
+                                <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
                                 <button mat-icon-button>
-                                    <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">edit</mat-icon>
+                                    <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">visibility</mat-icon>
                                 </button>
                             </div>
                             <span class="iteration"> | {{node.item.iterationPath}} |</span>
@@ -67,11 +67,11 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="end center">
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <div fxLayout="row" fxLayoutAlign="space-evenly center">
-                                <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
+                            <div fxLayout="row" fxLayoutAlign="end center">
                                 <mat-icon *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
+                                <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
                                 <button mat-icon-button>
-                                    <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">edit</mat-icon>
+                                    <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">visibility</mat-icon>
                                 </button>
                             </div>
                             <span class="iteration"> | {{node.item.iterationPath}} |</span>
