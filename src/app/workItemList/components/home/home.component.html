@@ -32,7 +32,7 @@
                         <div fxLayout="column" fxLayoutAlign="center stretch">
                             <div fxLayout="row" fxLayoutAlign="space-evenly center">
                                 <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
-                                <mat-icon *ngIf="node.item.commentCount > 0 && treeControl.isExpanded(node)" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
+                                <mat-icon *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
                                 <button mat-icon-button>
                                     <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">edit</mat-icon>
                                 </button>
@@ -69,7 +69,7 @@
                         <div fxLayout="column" fxLayoutAlign="center stretch">
                             <div fxLayout="row" fxLayoutAlign="space-evenly center">
                                 <mat-icon>{{workItemStatesList[node.item.state]}}</mat-icon>
-                                <mat-icon *ngIf="node.item.commentCount > 0 && treeControl.isExpanded(node)" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
+                                <mat-icon *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent">chat</mat-icon>
                                 <button mat-icon-button>
                                     <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">edit</mat-icon>
                                 </button>
