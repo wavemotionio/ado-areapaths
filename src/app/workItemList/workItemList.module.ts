@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import {
     MatCheckboxModule,
@@ -40,6 +41,7 @@ import { IterationPathsService } from './services/iterationPaths.service';
     MatInputModule,
     MatTreeModule,
     MatChipsModule,
+    MatSnackBarModule
   ],
   declarations: [HomeComponent, AreaPathsComponent, IterationPathsComponent],
   providers: [AreaPathsService, IterationPathsService]

@@ -1,17 +1,16 @@
 import {Component, Injectable, OnInit} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {CollectionViewer, SelectionChange} from '@angular/cdk/collections';
-import {BehaviorSubject} from 'rxjs';
-import {Observable} from 'rxjs';
-import {merge} from 'rxjs';
+import {BehaviorSubject, Observable, merge } from 'rxjs';
 import {map} from 'rxjs/operators';
 import _ from 'lodash';
 import { RootDataSourceService } from "../../../shared/services/rootDataSource.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { formatWorkItems } from './formatWorkItems';
 
 export class DynamicFlatNode {
   constructor(public item: any, public level: number = 1, public expandable: boolean = false, public isLoading: boolean = false, public children: any = []) {}
@@ -21,63 +20,15 @@ export class DynamicFlatNode {
 export class DynamicDatabase {
     private originalDataSource = new BehaviorSubject({});
     private isLoadingData = new BehaviorSubject(false);
+    private warning = {
+        message: 'Wait! This query includes over 1000 results. Go back and try a smaller query.',
+        subject: 'Warning'
+    };
 
     currentData = this.originalDataSource.asObservable();
     isLoadingPage = this.isLoadingData.asObservable();
-    headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    constructor(private httpClient: HttpClient) { }
-
-    formatWorkItems(workItemsFilteredByParents: any): any {
-        return _.map(workItemsFilteredByParents, (workItem) => {
-            let workItemFinal = {},
-                workItemOptimized = _.mapValues(_.pick(workItem, ['fields', 'relations']), (propValue, propName) => { 
-                    let returnValue = {};
-
-                    returnValue['fields'] = _.pick(propValue, [
-                        'System.Id',
-                        'System.AreaPath',
-                        'System.CommentCount',
-                        'System.Description',
-                        'System.IterationPath',
-                        'System.State',
-                        'System.Title',
-                        'System.WorkItemType',
-                        'Microsoft.VSTS.Common.AcceptanceCriteria',
-                        'Microsoft.VSTS.Common.BacklogPriority',
-                        'Microsoft.VSTS.Common.Priority',
-                        'Microsoft.VSTS.Scheduling.Effort',
-                    ]);
-
-                    returnValue['relations'] = _.map(_.filter(propValue, (relation) => relation['rel'] === 'System.LinkTypes.Hierarchy-Forward'), (relation) => parseInt(relation['url'].split('/workItems/')[1], 0));
-
-                    return returnValue[propName] || propValue;
-                });
-
-            workItemFinal['item'] = _.mapKeys(workItemOptimized['fields'], (fieldValue, fieldKey) => {
-                const keyMap = {};
-                keyMap['System.AreaPath'] = 'areaPath';
-                keyMap['System.CommentCount'] = 'commentCount';
-                keyMap['System.Description'] = 'description';
-                keyMap['System.IterationPath'] = 'iterationPath';
-                keyMap['System.State'] = 'state';
-                keyMap['System.Title'] = 'title';
-                keyMap['System.WorkItemType'] = 'workItemType';
-                keyMap['Microsoft.VSTS.Common.AcceptanceCriteria'] = 'acceptanceCriteria';
-                keyMap['Microsoft.VSTS.Common.BacklogPriority'] = 'backlogPriority';
-                keyMap['Microsoft.VSTS.Common.Priority'] = 'priority';
-                keyMap['Microsoft.VSTS.Scheduling.Effort'] = 'effort';
-
-                return keyMap[fieldKey] || 'error';
-            });
-
-            workItemFinal['item'].id = workItemFinal['item'].id || workItem.id;
-
-            workItemFinal['children'] = workItemOptimized['relations'];
-
-            return workItemFinal;
-        });
-    }
+    constructor(private _snackBar: MatSnackBar) { }
 
     async setCustomWIQLQuery(query: string): Promise<void> {
         this.isLoadingData.next(true);
@@ -87,21 +38,36 @@ export class DynamicDatabase {
             client = getClient(WorkItemTrackingRestClient),
             queryResults = await client.queryByWiql({query}),
             wiIds = _.map(queryResults.workItems, workItem => (workItem.id)),
-            postRequest = {
+            chunks = _.chunk(wiIds, 199);
+
+        let allWorkItems = [];
+
+        if (wiIds.length > 1000) {
+            this._snackBar.open(`${this.warning.message} (total: ${wiIds.length})`, this.warning.subject, {
+              duration: 10000,
+              verticalPosition: 'top'
+            });
+        }
+
+        for(let i=0; i<chunks.length; i++) {
+            const postRequest = {
                 $expand: 4,
                 asOf: null,
                 errorPolicy: 2,
                 fields: null,
-                ids: wiIds || []
+                ids: chunks[i] || []
             },
             workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [],
-            workItemsListFormatted = this.formatWorkItems(workItemsList);
-        
-        let findAllChildIds = _.uniq(_.flatten(_.map(workItemsListFormatted, (workItem) => {
+            workItemsListFormatted = formatWorkItems(workItemsList);
+
+            allWorkItems = _.concat(allWorkItems, workItemsListFormatted);
+        }
+
+        let findAllChildIds = _.uniq(_.flatten(_.map(allWorkItems, (workItem) => {
             return workItem.children;
         })));
 
-        const result = _.reject(_.map(workItemsListFormatted, workItem => (
+        const result = _.reject(_.map(allWorkItems, workItem => (
             new DynamicFlatNode(workItem.item, 0, !_.isEmpty(workItem.children), false, workItem.children)
         )), row => (_.includes(findAllChildIds, row.item.id)));
 
@@ -110,23 +76,34 @@ export class DynamicDatabase {
     }
 
     async getDynamicChildren(node: any): Promise<any> {
-        if (_.get(node, 'children.length') && node.children.length > 0) {
-            const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
-                project = await projectService.getProject(),
-                client = getClient(WorkItemTrackingRestClient),
-                childWorkItems = {
+        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
+            project = await projectService.getProject(),
+            client = getClient(WorkItemTrackingRestClient),
+            chunks = _.chunk(node.children, 199);
+        let allWorkItems = [];
+
+        if (node.children.length > 1000) {
+            this._snackBar.open(`${this.warning.message} (total: ${node.children.length})`, this.warning.subject, {
+                duration: 10000,
+                verticalPosition: 'top'
+            });
+        }
+
+        for(let i=0; i<chunks.length; i++) {
+            const childWorkItems = {
                     $expand: 4,
                     asOf: null,
                     errorPolicy: 2,
                     fields: null,
-                    ids: node.children || []
+                    ids: chunks[i] || []
                 },
-                getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name);
-            
-            return this.formatWorkItems(getChildrenDetails);
-        } else {
-            return [];
+                getChildrenDetails = await client.getWorkItemsBatch(childWorkItems, project.name),
+                formattedChildDetails = formatWorkItems(getChildrenDetails);
+
+            allWorkItems = _.concat(allWorkItems, formattedChildDetails);
         }
+
+        return allWorkItems;
     }
 
     isExpandable(node: any): boolean {
@@ -214,13 +191,28 @@ export class HomeComponent implements OnInit {
 
     constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, private _Activatedroute: ActivatedRoute) {
         this.workItemStatesList['New'] = 'fiber_new';
-        this.workItemStatesList['Approved'] = 'thumb_up';
-        this.workItemStatesList['In Progress'] = 'trending_up';
-        this.workItemStatesList['Committed'] = 'group';
-        this.workItemStatesList['Development Complete'] = 'code';
-        this.workItemStatesList['Done'] = 'done';
-        this.workItemStatesList['Removed'] = 'delete_forever';
+        this.workItemStatesList['Ready for review'] = 'fiber_new';
+        this.workItemStatesList['Needs Design'] = 'fiber_new';
+        this.workItemStatesList['Reviewed'] = 'fiber_new';
         this.workItemStatesList['To Do'] = 'fiber_new';
+
+        this.workItemStatesList['Approved'] = 'thumb_up';
+
+        this.workItemStatesList['In Progress'] = 'trending_up';
+        this.workItemStatesList['Committed'] = 'trending_up';
+        this.workItemStatesList['Development Complete'] = 'trending_up';
+        this.workItemStatesList['Validated in Lab'] = 'trending_up';
+        this.workItemStatesList['Validated in QA'] = 'trending_up';
+        this.workItemStatesList['Deployed to QA'] = 'trending_up';
+        this.workItemStatesList['QA Complete'] = 'trending_up';
+
+        this.workItemStatesList['Failed'] = 'bug_report';
+
+        this.workItemStatesList['Exception'] = 'cached';
+
+        this.workItemStatesList['Done'] = 'done';
+
+        this.workItemStatesList['Removed'] = 'delete_forever';
 
         this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
         this.dataSource = new DynamicDataSource(this.treeControl, database);
@@ -245,10 +237,10 @@ export class HomeComponent implements OnInit {
             // this.database.setInitialQuery();
         } else if (_.isString(areaPath)) {
             this.rootDataSourceService.changeMessage('Area Path: ' + areaPath);
-            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
         } else if (_.isString(iterationPath)) {
             this.rootDataSourceService.changeMessage('Iteration Path: ' + iterationPath);
-            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.IterationPath] UNDER '${iterationPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.WorkItemType] ASC, [Microsoft.VSTS.Common.BacklogPriority] ASC, [System.AreaPath] ASC`);
+            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.IterationPath] UNDER '${iterationPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.WorkItemType] ASC, [Microsoft.VSTS.Common.BacklogPriority] ASC, [System.AreaPath] ASC`);
         } else if (_.isString(workItemId)) {
             this.rootDataSourceService.changeMessage('Work Item: ' + workItemId);
             this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.Id] = '${workItemId}'`);
