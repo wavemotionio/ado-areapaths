@@ -21,6 +21,9 @@ import {
     MatTreeModule
 } from '@angular/material';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { AreaPathsService } from './services/areaPaths.service';
 import { IterationPathsService } from './services/iterationPaths.service';
 
@@ -41,7 +44,10 @@ import { IterationPathsService } from './services/iterationPaths.service';
     MatInputModule,
     MatTreeModule,
     MatChipsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatAutocompleteModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [HomeComponent, AreaPathsComponent, IterationPathsComponent],
   providers: [AreaPathsService, IterationPathsService]

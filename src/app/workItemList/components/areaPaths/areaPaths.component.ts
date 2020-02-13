@@ -4,6 +4,10 @@ import _ from 'lodash';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 
+import {FormControl} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+
 interface AreaPathNode {
   name: string;
   children?: AreaPathNode[];
@@ -16,6 +20,11 @@ interface AreaPathNode {
 })
 
 export class AreaPathsComponent implements OnInit {
+
+    myControl = new FormControl();
+    options: string[];
+    filteredOptions: Observable<string[]>;
+
     areaPathsAndIterations: any;
     isLoading: boolean;
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
@@ -27,9 +36,41 @@ export class AreaPathsComponent implements OnInit {
 
     async ngOnInit() {
         this.areaPathsService.getAreaPaths().then(data => {
-            this.dataSource.data = _.get(data, 'areaPaths.children') || [];
+            let test = _.get(data, 'areaPaths.children');
+            
+            this.options = this._flatten(test);
+
+            this.dataSource.data = test || [];
         });
 
+        this.filteredOptions = this.myControl.valueChanges
+          .pipe(
+            startWith(''),
+            map(value => this._filter(value))
+          );
+
         this.areaPathsService.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
+    }
+
+    private _filter(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    private _flatten(arr) {
+        let flattenedArr = [];
+
+        _.each(arr, (item) => {
+            flattenedArr.push(item['path']);
+
+            if (item.children && item.children.length > 0) {
+                this._flatten(item.children);
+            } else {
+                console.log('edge case: ', item);
+            }
+        });
+
+        return flattenedArr;
     }
 }
