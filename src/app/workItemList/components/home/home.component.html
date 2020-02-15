@@ -24,7 +24,7 @@
 <div style="margin-top:10px;" *ngIf="!isLoading && dataSource.data?.length > 0">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-            <div fxLayout="column" fxLayoutAlign="center none" style="width:100%;">
+            <div fxLayout="column" fxLayoutAlign="center none" class="work-item-row">
                 <div fxLayout="row" fxLayoutAlign="space-between center" style="clear: both;">
                     <div fxLayout="row" fxLayoutAlign="start center" class="work-item-icons-list">
                         <mat-icon
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div style="position:absolute; right:20px;">
+                    <div class="work-item-icons-gruop">
                         <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
                         <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
                         <button mat-icon-button matTooltip="open work item">
@@ -51,7 +51,7 @@
             </div>
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-            <div fxLayout="column" fxLayoutAlign="center none" style="width:100%;">
+            <div fxLayout="column" fxLayoutAlign="center none" class="work-item-row">
                 <div fxLayout="row" fxLayoutAlign="space-between center" style="clear: both;">
                     <div fxLayout="row" fxLayoutAlign="start center" class="work-item-icons-list">
                         <mat-icon
@@ -73,7 +73,7 @@
                             <span class="iteration">{{node.item.iterationPath}}</span>
                         </div>
                     </div>
-                    <div style="position:absolute; right:20px;">
+                    <div class="work-item-icons-group">
                         <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
                         <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
                         <button mat-icon-button matTooltip="open work item">
