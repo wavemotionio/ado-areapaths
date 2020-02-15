@@ -32,7 +32,8 @@ export class DynamicDatabase {
 
     async filter(filterText: string, unfilteredData: any): Promise<void> {
         this.originalDataSource.next(_.filter(unfilteredData, (treenode)=> {
-            return _.includes(_.get(treenode, 'item.title').toLowerCase(), filterText.toLowerCase());
+            return _.includes(_.get(treenode, 'item.title').toLowerCase(), filterText.toLowerCase()) ||
+                _.includes(_.get(treenode, 'item.id').toString(), filterText.toLowerCase());
         }));
     }
 

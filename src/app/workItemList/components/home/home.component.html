@@ -34,7 +34,7 @@
                         <span *ngIf="node.children && node.children.length > 0 && !treeControl.isExpanded(node)" matBadge="{{node.children.length}}" matBadgeOverlap="true" matBadgeColor="primary"></span>
                         <button mat-icon-button disabled></button>
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <span class="area-path">{{node.item.areaPath}}</span>
+                            <span class="area-path">{{node.item.id}} | {{node.item.areaPath}}</span>
                             <span class="title" matTooltip="{{node.item.title}}">{{node.item.title}}</span>
                             <span class="iteration">{{node.item.iterationPath}}</span>
                         </div>
@@ -68,7 +68,7 @@
                             </mat-icon>
                         </button>
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <span class="area-path">{{node.item.areaPath}}</span>
+                            <span class="area-path">{{node.item.id}} | {{node.item.areaPath}}</span>
                             <span class="title" matTooltip="{{node.item.title}}">{{node.item.title}}</span>
                             <span class="iteration">{{node.item.iterationPath}}</span>
                         </div>
