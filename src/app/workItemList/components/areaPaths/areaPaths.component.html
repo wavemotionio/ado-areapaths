@@ -30,8 +30,8 @@
             </mat-autocomplete>
         </mat-form-field>
         <div fxLayout="row" fxLayoutAlign="space-evenly center">
-            <button mat-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active" matTooltip="find incomplete work items">View</button>
-            <button mat-button color="primary" (click)="addNewWorkItem(myControl.value)" matTooltip="add PBI">Add PBI</button>
+            <button mat-raised-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active" matTooltip="find incomplete work items in selected area path">View</button>
+            <button mat-raised-button color="primary" (click)="addNewWorkItem(myControl.value)" matTooltip="add a new PBI to the selected area path">New PBI</button>
         </div>
     </form>
 

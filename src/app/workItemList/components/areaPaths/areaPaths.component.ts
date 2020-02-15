@@ -76,8 +76,7 @@ export class AreaPathsComponent implements OnInit {
     async addNewWorkItem(areaPath) {
         const navSvc = await SDK.getService<IWorkItemFormNavigationService>(WorkItemTrackingServiceIds.WorkItemFormNavigationService);
 
-        navSvc.openNewWorkItem('Product Backlog Item', { 
-            Title: `New PBI in the ${areaPath} area path`,
+        navSvc.openNewWorkItem('Product Backlog Item', {
             priority: 4,
             "System.AreaPath": areaPath,
             "System.AssignedTo": SDK.getUser().name,
