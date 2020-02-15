@@ -12,7 +12,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTreeModule } from '@angular/material/tree';
@@ -36,7 +35,6 @@ import { AreaPathsService } from './services/areaPaths.service';
     MatFormFieldModule,
     MatInputModule,
     MatTreeModule,
-    MatChipsModule,
     MatSnackBarModule,
     MatAutocompleteModule,
     FormsModule,

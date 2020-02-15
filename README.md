@@ -34,3 +34,17 @@ So that you can view work items organized by area path or iteration path in Azur
 - https://docs.microsoft.com/en-us/azure/devops/extend/reference/client/api/tfs/workitemtracking/restclient/workitemtrackinghttpclient2_1?view=azure-devops
 - https://github.com/microsoft/azure-devops-extension-api
 - https://github.com/microsoft/azure-devops-extension-sample
+
+# Development Notes
+
+```
+Update devDependencies
+
+"karma": "*",
+"karma-chrome-launcher": "*",
+"karma-coverage-istanbul-reporter": "*",
+"karma-jasmine": "*",
+"karma-jasmine-html-reporter": "*",
+"protractor": "*",
+"ts-node": "*",
+```
