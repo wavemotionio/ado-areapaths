@@ -12,7 +12,7 @@
     <mat-form-field class="example-full-width">
         <mat-icon matPrefix>filter_list</mat-icon>
         <input matInput placeholder="Filter visible by keyword or ID" (input)="filterChanged($event.target.value)">
-        <mat-hint align="start">You must refresh the area path to clear the filter.</mat-hint>
+        <mat-hint align="start">Once filtered, you must refresh the area path to clear this filter.</mat-hint>
     </mat-form-field>
 </form>
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="work-item-icons-gruop">
+                    <div class="work-item-icons-group">
                         <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
                         <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
                         <button mat-icon-button matTooltip="open work item">
