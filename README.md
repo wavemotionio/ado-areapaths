@@ -11,16 +11,9 @@
 # ado-areapaths ![GitHub package.json version](https://img.shields.io/github/package-json/v/wavemotionio/ado-areapaths.svg)
 
 ## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](https://github.com/wavemotionio/ado-areapaths/issues)
-So that you can view work items organized by area path or iteration path in Azure DevOps without creating and maintaining custom queries. * The feature flag defaults to false so the extension is hidden unless a user opts in. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps*
+So that you can search area paths of Azure DevOps without creating and maintaining custom queries. *The feature flag defaults to true but can be toggled off. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps*
 
-## How to use
-#### Enable Feature Flag
-![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/1-turn-on-feature-flag-step1.png "1-turn-on-feature-flag-step1")
-![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/2-turn-on-feature-flag-step2.png "1-turn-on-feature-flag-step2")
-#### Navigate to AreaPaths hub
-![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/1-area-paths-tree.png "1-area-paths-tree")
-![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/2-backlog-viewer.png "2-backlog-viewer")
-![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/3-backlog-view-expanded.png "3-backlog-view-expanded")
+![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/1-area-paths-in-boards-hub.png "Area Path search in the azure devops boards hub")
 
 ### References
 - https://docs.microsoft.com/en-us/azure/devops/extend/get-started/node?view=azure-devops
@@ -34,3 +27,17 @@ So that you can view work items organized by area path or iteration path in Azur
 - https://docs.microsoft.com/en-us/azure/devops/extend/reference/client/api/tfs/workitemtracking/restclient/workitemtrackinghttpclient2_1?view=azure-devops
 - https://github.com/microsoft/azure-devops-extension-api
 - https://github.com/microsoft/azure-devops-extension-sample
+
+# Development Notes
+
+```
+Update devDependencies
+"eslint": "*",
+"karma": "*",
+"karma-chrome-launcher": "*",
+"karma-coverage-istanbul-reporter": "*",
+"karma-jasmine": "*",
+"karma-jasmine-html-reporter": "*",
+"protractor": "*",
+"ts-node": "*",
+```
