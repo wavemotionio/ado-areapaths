@@ -75,12 +75,16 @@ export class AreaPathsComponent implements OnInit {
 
     async addNewWorkItem(areaPath) {
         const navSvc = await SDK.getService<IWorkItemFormNavigationService>(WorkItemTrackingServiceIds.WorkItemFormNavigationService);
-        
+
         navSvc.openNewWorkItem('Product Backlog Item', { 
             Title: `New PBI in the ${areaPath} area path`,
-            priority: 1,
+            priority: 4,
             "System.AreaPath": areaPath,
             "System.AssignedTo": SDK.getUser().name,
+            "System.Description": 'As ___, we require that ___ so that ___.',
+            "Microsoft.VSTS.Common.AcceptanceCriteria": "___ must ___.",
+            "Microsoft.VSTS.Common.BusinessValue": 5,
+            "Microsoft.VSTS.Common.ValueArea": 'Architectural'
          });
     }
 }
