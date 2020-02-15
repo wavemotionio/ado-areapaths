@@ -13,18 +13,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
-import {
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTreeModule
-} from '@angular/material';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { AreaPathsService } from './services/areaPaths.service';
 
 @NgModule({
@@ -39,7 +33,6 @@ import { AreaPathsService } from './services/areaPaths.service';
     FlexLayoutModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     MatTreeModule,

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { HelpComponent } from '../help/help.component';
 import { Router } from '@angular/router';
 import { TerminalComponent } from '../terminal/terminal.component';
