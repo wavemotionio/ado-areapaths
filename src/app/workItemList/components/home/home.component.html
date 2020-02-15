@@ -12,7 +12,7 @@
     <mat-form-field class="example-full-width">
         <mat-icon matPrefix>filter_list</mat-icon>
         <input matInput placeholder="Filter visible by keyword or ID" (input)="filterChanged($event.target.value)">
-        <mat-hint align="start">You must refresh the area path to clear the filter.</mat-hint>
+        <mat-hint align="start">Once filtered, you must refresh the area path to clear this filter.</mat-hint>
     </mat-form-field>
 </form>
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
