@@ -2,9 +2,9 @@
     "manifestVersion": 1,
     "id": "ado-areapaths",
     "publisher": "wavemotionio",
-    "version": "2.5.4",
-    "name": "Azure DevOps Area Paths",
-    "description": "This extension allows you to navigate area paths in azure devops.",
+    "version": "2.5.5",
+    "name": "Area Paths Viewer",
+    "description": "This extension allows you to search and view area paths in azure devops.",
     "public": true,
     "categories": ["Azure Boards"],
     "targets": [
