@@ -4,6 +4,12 @@ import _ from 'lodash';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 
+import { FormControl, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import * as SDK from "azure-devops-extension-sdk";
+import { IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
+
 interface AreaPathNode {
   name: string;
   children?: AreaPathNode[];
@@ -16,6 +22,12 @@ interface AreaPathNode {
 })
 
 export class AreaPathsComponent implements OnInit {
+
+    myControl = new FormControl('', [Validators.required]);
+    options: string[];
+    filteredOptions: Observable<string[]>;
+    flattenedArr = [];
+
     areaPathsAndIterations: any;
     isLoading: boolean;
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
@@ -27,9 +39,55 @@ export class AreaPathsComponent implements OnInit {
 
     async ngOnInit() {
         this.areaPathsService.getAreaPaths().then(data => {
-            this.dataSource.data = _.get(data, 'areaPaths.children') || [];
+            let test = _.get(data, 'areaPaths.children');
+            
+            this._flatten(test);
+
+            this.options = this.flattenedArr;
+
+            this.dataSource.data = test || [];
         });
 
+        this.filteredOptions = this.myControl.valueChanges
+          .pipe(
+            startWith(''),
+            map(value => this._filter(value))
+          );
+
         this.areaPathsService.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
+    }
+
+    private _filter(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    private _flatten(arr) {
+        _.each(arr, (item) => {
+            this.flattenedArr.push(item['path']);
+
+            if (item.children && item.children.length > 0) {
+                this._flatten(item.children);
+            }
+        });
+    }
+
+    async addNewWorkItem(areaPath) {
+        const navSvc = await SDK.getService<IWorkItemFormNavigationService>(WorkItemTrackingServiceIds.WorkItemFormNavigationService);
+
+        navSvc.openNewWorkItem('Product Backlog Item', {
+            priority: 4,
+            "System.AreaPath": areaPath,
+            "System.AssignedTo": SDK.getUser().name,
+            "System.Description": 'As ___, we require that ___ so that ___.',
+            "Microsoft.VSTS.Common.AcceptanceCriteria": "___ must ___.",
+            "Microsoft.VSTS.Common.BusinessValue": 5,
+            "Microsoft.VSTS.Common.ValueArea": 'Architectural'
+         });
+    }
+
+    getErrorMessage() {
+        return this.myControl.hasError('required') ? 'You must enter an area path.' : '';
     }
 }

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './components/home/home.component';
 import { AreaPathsComponent } from './components/areaPaths/areaPaths.component';
-import { IterationPathsComponent } from './components/iterationPaths/iterationPaths.component';
 import { routes } from './workItemList.routing';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
@@ -21,8 +20,12 @@ import {
     MatTreeModule
 } from '@angular/material';
 
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { AreaPathsService } from './services/areaPaths.service';
-import { IterationPathsService } from './services/iterationPaths.service';
 
 @NgModule({
   imports: [
@@ -41,9 +44,13 @@ import { IterationPathsService } from './services/iterationPaths.service';
     MatInputModule,
     MatTreeModule,
     MatChipsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatAutocompleteModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTooltipModule
   ],
-  declarations: [HomeComponent, AreaPathsComponent, IterationPathsComponent],
-  providers: [AreaPathsService, IterationPathsService]
+  declarations: [HomeComponent, AreaPathsComponent],
+  providers: [AreaPathsService]
 })
 export class WorkItemListModule { }

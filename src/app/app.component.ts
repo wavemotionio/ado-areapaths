@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { SideNavService } from './shared/services/sideNav.service';
 import * as SDK from "azure-devops-extension-sdk";
 
 @Component({
@@ -11,12 +10,10 @@ import * as SDK from "azure-devops-extension-sdk";
 
 export class AppComponent implements OnInit {
     title = 'HPUI';
-    isNavOpened: boolean = false;
 
-    constructor(private sideNavService: SideNavService) {}
+    constructor() {}
 
     ngOnInit(){
-        SDK.init();  
-        this.sideNavService.isSideNavOpened.subscribe(isNavOpened => this.isNavOpened = isNavOpened); 
+        SDK.init();
     }
 }
