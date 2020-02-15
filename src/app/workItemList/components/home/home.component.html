@@ -8,20 +8,20 @@
         <mat-icon (click)="setAreaPathData()" aria-label="refresh">refresh</mat-icon>
     </button>
 </div>
-<div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
-    <mat-spinner mode="indeterminate"></mat-spinner>
-</div>
-<div>
-    <mat-form-field style="width:100%">
+<form class="example-form">
+    <mat-form-field class="example-full-width">
         <mat-icon matPrefix>filter_list</mat-icon>
-        <input matInput placeholder="Filter" (input)="filterChanged($event.target.value)">
+        <input matInput placeholder="Filter by keyword or ID" (input)="filterChanged($event.target.value)">
         <mat-hint align="start">You must refresh the area path to clear the filter.</mat-hint>
     </mat-form-field>
+</form>
+<div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
+    <mat-spinner mode="indeterminate"></mat-spinner>
 </div>
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
     <h4>No Data Found</h4>
 </div>
-<div *ngIf="!isLoading && dataSource.data?.length > 0">
+<div style="margin-top:10px;" *ngIf="!isLoading && dataSource.data?.length > 0">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
             <div fxLayout="column" fxLayoutAlign="center none" style="width:100%;">
