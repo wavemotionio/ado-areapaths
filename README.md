@@ -11,7 +11,7 @@
 # ado-areapaths ![GitHub package.json version](https://img.shields.io/github/package-json/v/wavemotionio/ado-areapaths.svg)
 
 ## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](https://github.com/wavemotionio/ado-areapaths/issues)
-So that you can search area paths of Azure DevOps without creating and maintaining custom queries. *The feature flag defaults to true but can be toggled off. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps*
+So that you can search area paths of Azure DevOps without creating and maintaining custom queries. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps. *The feature flag defaults to true but can be toggled off.*
 
 ![alt text](https://github.com/wavemotionio/ado-areapaths/raw/master/docs/1-area-paths-in-boards-hub.png "Area Path search in the azure devops boards hub")
 
