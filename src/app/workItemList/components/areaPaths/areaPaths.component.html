@@ -1,6 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="space-between center">
     <h1>
-        <small>Area Paths</small>
+        <small>Search</small>
     </h1>
 </div>
 
@@ -17,20 +17,24 @@
     <form class="example-form">
         <mat-form-field class="example-full-width">
             <input type="text"
-                 placeholder="Search Area Paths"
-                 aria-label="Search"
+                 placeholder="Choose An Area"
+                 aria-label="Choose Area"
                  matInput
                  [formControl]="myControl"
                  [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                 <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                   {{option}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
+        <div fxLayout="row" fxLayoutAlign="space-evenly center">
+            <button mat-raised-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active">View Area</button>
+            <!-- <button mat-raised-button color="accent">Add PBI</button> -->
+        </div>
     </form>
 
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+    <!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         <li class="mat-tree-node">
             <button mat-icon-button disabled></button>
@@ -53,5 +57,5 @@
           </ul>
         </li>
       </mat-nested-tree-node>
-    </mat-tree>
+    </mat-tree> -->
 </div>

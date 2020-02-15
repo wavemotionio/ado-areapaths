@@ -24,6 +24,7 @@ export class AreaPathsComponent implements OnInit {
     myControl = new FormControl();
     options: string[];
     filteredOptions: Observable<string[]>;
+    flattenedArr = [];
 
     areaPathsAndIterations: any;
     isLoading: boolean;
@@ -38,7 +39,9 @@ export class AreaPathsComponent implements OnInit {
         this.areaPathsService.getAreaPaths().then(data => {
             let test = _.get(data, 'areaPaths.children');
             
-            this.options = this._flatten(test);
+            this._flatten(test);
+
+            this.options = this.flattenedArr;
 
             this.dataSource.data = test || [];
         });
@@ -59,18 +62,12 @@ export class AreaPathsComponent implements OnInit {
     }
 
     private _flatten(arr) {
-        let flattenedArr = [];
-
         _.each(arr, (item) => {
-            flattenedArr.push(item['path']);
+            this.flattenedArr.push(item['path']);
 
             if (item.children && item.children.length > 0) {
                 this._flatten(item.children);
-            } else {
-                console.log('edge case: ', item);
             }
         });
-
-        return flattenedArr;
     }
 }

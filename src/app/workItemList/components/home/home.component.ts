@@ -30,6 +30,12 @@ export class DynamicDatabase {
 
     constructor(private _snackBar: MatSnackBar) { }
 
+    async filter(filterText: string, unfilteredData: any): Promise<void> {
+        this.originalDataSource.next(_.filter(unfilteredData, (treenode)=> {
+            return _.includes(_.get(treenode, 'item.title').toLowerCase(), filterText.toLowerCase());
+        }));
+    }
+
     async setCustomWIQLQuery(query: string): Promise<void> {
         this.isLoadingData.next(true);
 
@@ -192,6 +198,7 @@ export class HomeComponent implements OnInit {
     constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, private _Activatedroute: ActivatedRoute) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
+        this.workItemStatesList['Under Review'] = 'fiber_new';
         this.workItemStatesList['Needs Design'] = 'fiber_new';
         this.workItemStatesList['Reviewed'] = 'fiber_new';
         this.workItemStatesList['To Do'] = 'fiber_new';
@@ -237,7 +244,7 @@ export class HomeComponent implements OnInit {
             // this.database.setInitialQuery();
         } else if (_.isString(areaPath)) {
             this.rootDataSourceService.changeMessage('Area Path: ' + areaPath);
-            this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+            this.setAreaPathData();
         } else if (_.isString(iterationPath)) {
             this.rootDataSourceService.changeMessage('Iteration Path: ' + iterationPath);
             this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.IterationPath] UNDER '${iterationPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.WorkItemType] ASC, [Microsoft.VSTS.Common.BacklogPriority] ASC, [System.AreaPath] ASC`);
@@ -261,6 +268,15 @@ export class HomeComponent implements OnInit {
 
     saveTree() {
         // console.log('save clicked');
+    }
+
+    setAreaPathData() {
+        const areaPath = this._Activatedroute.snapshot.params['areaPath'];
+        this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+    }
+
+    filterChanged(filterText: string) {
+        this.database.filter(filterText, this.dataSource.data);
     }
 
     async onNavigate(id) {
