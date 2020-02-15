@@ -1,21 +1,11 @@
 <div class="container">
     <div app-nav></div>
     <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="0">
-        <!-- <mat-sidenav #sidenav mode="side" [(opened)]="isNavOpened">
-            <mat-nav-list>
-                <h3 mat-subheader>Area Paths</h3>
-                <mat-divider></mat-divider>
-                <a mat-list-item routerLink="areaPaths" routerLinkActive="active">
-                    <mat-icon mat-list-icon>search</mat-icon>
-                    <h4 mat-line>Search</h4>
-                </a>
-                <mat-divider></mat-divider>
-            </mat-nav-list>
-        </mat-sidenav> -->
         <mat-sidenav-content>
             <div class="body-content">
                 <router-outlet></router-outlet>
             </div>
+            <div app-footer></div>
         </mat-sidenav-content>
     </mat-sidenav-container>
 </div>
