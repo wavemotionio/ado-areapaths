@@ -7,6 +7,8 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import * as SDK from "azure-devops-extension-sdk";
+import { IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 
 interface AreaPathNode {
   name: string;
@@ -69,5 +71,16 @@ export class AreaPathsComponent implements OnInit {
                 this._flatten(item.children);
             }
         });
+    }
+
+    async addNewWorkItem(areaPath) {
+        const navSvc = await SDK.getService<IWorkItemFormNavigationService>(WorkItemTrackingServiceIds.WorkItemFormNavigationService);
+        
+        navSvc.openNewWorkItem('Product Backlog Item', { 
+            Title: `New PBI in the ${areaPath} area path`,
+            priority: 1,
+            "System.AreaPath": areaPath,
+            "System.AssignedTo": SDK.getUser().name,
+         });
     }
 }
