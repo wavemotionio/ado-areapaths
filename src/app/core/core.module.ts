@@ -14,6 +14,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip'
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatBottomSheetModule,
     MatInputModule,
     FormsModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatTooltipModule
   ],
   entryComponents: [TerminalComponent, HelpComponent],
   declarations: [NavComponent, FooterComponent, TerminalComponent, HelpComponent],

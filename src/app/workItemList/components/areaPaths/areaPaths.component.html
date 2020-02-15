@@ -16,9 +16,10 @@
 
     <form class="example-form">
         <mat-form-field class="example-full-width">
+            <mat-icon matPrefix>search</mat-icon>
             <input type="text"
-                 placeholder="Choose An Area"
-                 aria-label="Choose Area"
+                 placeholder="Find an area path"
+                 aria-label="Find an area path"
                  matInput
                  [formControl]="myControl"
                  [matAutocomplete]="auto">
@@ -29,7 +30,7 @@
             </mat-autocomplete>
         </mat-form-field>
         <div fxLayout="row" fxLayoutAlign="space-evenly center">
-            <button mat-raised-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active">View Area</button>
+            <button mat-raised-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active" matTooltip="find incomplete work items">view</button>
             <!-- <button mat-raised-button color="accent">Add PBI</button> -->
         </div>
     </form>
