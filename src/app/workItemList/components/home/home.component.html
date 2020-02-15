@@ -4,21 +4,24 @@
         <br>
         <small>{{message}}</small>
     </h2>
-    <button mat-fab color="primary">
+    <button mat-fab color="primary" matTooltip="refresh area">
         <mat-icon (click)="setAreaPathData()" aria-label="refresh">refresh</mat-icon>
     </button>
 </div>
+<form class="example-form">
+    <mat-form-field class="example-full-width">
+        <mat-icon matPrefix>filter_list</mat-icon>
+        <input matInput placeholder="Filter visible by keyword or ID" (input)="filterChanged($event.target.value)">
+        <mat-hint align="start">You must refresh the area path to clear the filter.</mat-hint>
+    </mat-form-field>
+</form>
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
     <mat-spinner mode="indeterminate"></mat-spinner>
 </div>
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
     <h4>No Data Found</h4>
 </div>
-<div *ngIf="!isLoading && dataSource.data?.length > 0">
-    <mat-form-field>
-        <mat-icon matPrefix>filter_list</mat-icon>
-        <input matInput placeholder="Filter" (input)="filterChanged($event.target.value)">
-    </mat-form-field>
+<div style="margin-top:10px;" *ngIf="!isLoading && dataSource.data?.length > 0">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
             <div fxLayout="column" fxLayoutAlign="center none" style="width:100%;">
@@ -31,16 +34,16 @@
                         <span *ngIf="node.children && node.children.length > 0 && !treeControl.isExpanded(node)" matBadge="{{node.children.length}}" matBadgeOverlap="true" matBadgeColor="primary"></span>
                         <button mat-icon-button disabled></button>
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <span class="area-path">{{node.item.areaPath}}</span>
-                            <span class="title" title="{{node.item.title}}">{{node.item.title}}</span>
+                            <span class="area-path">{{node.item.id}} | {{node.item.areaPath}}</span>
+                            <span class="title" matTooltip="{{node.item.title}}">{{node.item.title}}</span>
                             <span class="iteration">{{node.item.iterationPath}}</span>
                         </div>
                     </div>
 
                     <div style="position:absolute; right:20px;">
-                        <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" title="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
-                        <mat-icon class="inactive-icon" title="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
-                        <button mat-icon-button>
+                        <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
+                        <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
+                        <button mat-icon-button matTooltip="open work item">
                             <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">open_in_browser</mat-icon>
                         </button>
                     </div>
@@ -65,15 +68,15 @@
                             </mat-icon>
                         </button>
                         <div fxLayout="column" fxLayoutAlign="center stretch">
-                            <span class="area-path">{{node.item.areaPath}}</span>
-                            <span class="title" title="{{node.item.title}}">{{node.item.title}}</span>
+                            <span class="area-path">{{node.item.id}} | {{node.item.areaPath}}</span>
+                            <span class="title" matTooltip="{{node.item.title}}">{{node.item.title}}</span>
                             <span class="iteration">{{node.item.iterationPath}}</span>
                         </div>
                     </div>
                     <div style="position:absolute; right:20px;">
-                        <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" title="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
-                        <mat-icon class="inactive-icon" title="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
-                        <button mat-icon-button>
+                        <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
+                        <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state]}}</mat-icon>&nbsp;&nbsp;
+                        <button mat-icon-button matTooltip="open work item">
                             <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">open_in_browser</mat-icon>
                         </button>
                     </div>
