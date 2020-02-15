@@ -44,5 +44,19 @@ mat-tree-node {
 }
 
 .work-item-icons-list > .mat-icon {
-	margin-right: 10px;
+    margin-right: 10px;
+}
+
+.work-item-row {
+    width: 100%;
+}
+
+.work-item-row:hover {
+    border: 1px dashed #eee;
+}
+
+.work-item-icons-group {
+    position:absolute;
+    right:20px;
+    background-color: #fff;
 }
