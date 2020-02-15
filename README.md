@@ -13,6 +13,9 @@
 ## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](https://github.com/wavemotionio/ado-areapaths/issues)
 So that you can search and view area paths of Azure DevOps without creating and maintaining custom queries. Once enabled, the `AreaPaths` hub will appear within the `Boards` hub of Azure DevOps. *The feature flag defaults to true but can be toggled off.*
 
+## Install from Visual Studio Marketplace
+https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
+
 ## How to use
 
 #### Navigate to the Area Path search in the azure devops boards hub:
