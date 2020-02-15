@@ -21,7 +21,7 @@
                  placeholder="Find an area path"
                  aria-label="Find an area path"
                  matInput
-                 [formControl]="selectedAreaPath"
+                 [formControl]="myControl"
                  [matAutocomplete]="auto">
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                 <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -30,8 +30,8 @@
             </mat-autocomplete>
         </mat-form-field>
         <div fxLayout="row" fxLayoutAlign="space-evenly center">
-            <button mat-raised-button color="primary" routerLink="/work/areaPath/{{selectedAreaPath.value}}" routerLinkActive="active" matTooltip="find incomplete work items">View</button>
-            <button mat-raised-button color="accent" (click)="addNewWorkItem(selectedAreaPath.value)" matTooltip="add PBI">Add PBI</button>
+            <button mat-raised-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active" matTooltip="find incomplete work items">View</button>
+            <button mat-raised-button color="accent" (click)="addNewWorkItem(myControl.value)" matTooltip="add PBI">Add PBI</button>
         </div>
     </form>
 
