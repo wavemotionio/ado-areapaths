@@ -8,8 +8,11 @@
     <mat-spinner mode="indeterminate"></mat-spinner>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
+<div fxLayout="column" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
     <h4>No Data Found</h4>
+    <button mat-icon-button routerLink="/areaPaths" routerLinkActive="active" matTooltip="new search">
+        <mat-icon>arrow_back</mat-icon> Go back to search
+    </button>
 </div>
 
 <div *ngIf="!isLoading && dataSource.data.length > 0">
