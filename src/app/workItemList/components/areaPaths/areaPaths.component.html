@@ -10,7 +10,7 @@
 
 <div fxLayout="column" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
     <h4>No Data Found</h4>
-    <button mat-icon-button routerLink="/areaPaths" routerLinkActive="active" matTooltip="new search">
+    <button mat-button color="primary" routerLink="/areaPaths" routerLinkActive="active" matTooltip="go back to search">
         <mat-icon>arrow_back</mat-icon> Go back to search
     </button>
 </div>
