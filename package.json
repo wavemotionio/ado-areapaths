@@ -1,10 +1,11 @@
 {
   "name": "ado-areapaths",
-  "version": "2.6.2",
+  "version": "2.6.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build --prod && npx tfx extension create",
+    "publish-extension": "npx cross-var npx tfx extension publish --vsix \"./wavemotionio.ado-areapaths-$npm_package_version.vsix\"",
     "test": "",
     "lint": "",
     "e2e": ""
@@ -44,6 +45,7 @@
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^13.9.8",
     "codelyzer": "^5.2.2",
+    "cross-var": "^1.1.0",
     "eslint": "^6.8.0",
     "rimraf": "^3.0.2",
     "tfx-cli": "^0.7.11",

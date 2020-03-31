@@ -42,6 +42,9 @@ https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
 
 # Development Notes
 
+## To Dos
+1. Update to support other projects types other than SCRUM (additional work item types)
+2. Update devDeps
 ```
 Update devDependencies
 "eslint": "*",

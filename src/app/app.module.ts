@@ -6,11 +6,7 @@ import { CoreModule } from './core/core.module';
 import { WorkItemListModule } from './workItemList/workItemList.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -23,11 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
     SharedModule,
     WorkItemListModule,
     BrowserAnimationsModule,
-    MatDividerModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatListModule,
-    MatIconModule
+    MatSidenavModule
   ],
   bootstrap: [AppComponent]
 })
