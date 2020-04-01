@@ -234,6 +234,13 @@ export class BacklogComponent implements OnInit {
             workItemId = this._Activatedroute.snapshot.params['workItemId'];
 
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
+
+        if (_.isString(areaPath)) {
+            this.rootDataSourceService.changeMessage('Path: ' + areaPath);
+        }
+
+        await SDK.ready();
+
         this.database.currentData.subscribe(data => {
             this.dataSource.data = _.reject(data, (flattenedNode) => {
                 return _.isUndefined(flattenedNode.item);
@@ -244,7 +251,6 @@ export class BacklogComponent implements OnInit {
         if (!_.isString(areaPath) && !_.isString(iterationPath) && !_.isString(workItemId)) {
             // this.database.setInitialQuery();
         } else if (_.isString(areaPath)) {
-            this.rootDataSourceService.changeMessage('Area Path: ' + areaPath);
             this.setAreaPathData();
         }
     }

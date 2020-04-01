@@ -11,7 +11,7 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes, { useHash: true, preloadingStrategy: PreloadAllModules })],
 	exports: [RouterModule],
-	providers: [{provide: APP_BASE_HREF, useValue: '/app'}]
+	providers: [{provide: APP_BASE_HREF, useValue: '/'}]
 })
 
 export class AppRoutingModule { }
