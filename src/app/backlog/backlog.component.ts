@@ -262,7 +262,7 @@ export class BacklogComponent implements OnInit {
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
     setAreaPathData() {
-        const areaPath = this._Activatedroute.snapshot.params['areaPath'];
+        const areaPath = this._Activatedroute.snapshot.params['azurepath'];
         this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
     }
 
