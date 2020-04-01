@@ -9,8 +9,6 @@ import * as SDK from "azure-devops-extension-sdk";
 })
 
 export class AppComponent implements OnInit {
-    title = 'HPUI';
-
     constructor() {}
 
     ngOnInit(){

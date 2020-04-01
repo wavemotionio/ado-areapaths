@@ -88,6 +88,6 @@ export class SearchComponent implements OnInit {
     }
 
     getErrorMessage() {
-        return this.myControl.hasError('required') ? 'You must enter an area path.' : '';
+        return this.myControl.hasError('required') ? 'You must enter a valid path.' : '';
     }
 }
