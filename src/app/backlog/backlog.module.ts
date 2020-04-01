@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { SharedModule } from '../shared/shared.module';
 import { BacklogRoutingModule } from './backlog-routing.module';
 import { BacklogComponent } from './backlog.component';
 
@@ -18,12 +19,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-
 @NgModule({
   declarations: [BacklogComponent],
   imports: [
     CommonModule,
     BacklogRoutingModule,
+    SharedModule,
     MatIconModule,
     MatBadgeModule,
     MatButtonModule,
