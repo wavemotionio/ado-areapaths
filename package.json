@@ -1,12 +1,11 @@
 {
   "name": "ado-areapaths",
-  "version": "2.6.12",
+  "version": "2.6.14",
   "scripts": {
     "clean": "npx rimraf ./dist",
     "compile": "npm run clean && ng build --prod",
     "start": "npm run clean && ng serve --proxy-config proxy.conf.json",
     "build": "npm run patch && npm run compile",
-    "build:dev": "npm run start && npm run postbuild",
     "postbuild": "npm run package-extension -- --rev-version && npm run commit",
     "package-extension": "npx tfx extension create",
     "publish-extension": "npx cross-var npx tfx extension publish --vsix \"./wavemotionio.ado-areapaths-$npm_package_version.vsix\"",

@@ -6,7 +6,7 @@ import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-e
 import { WorkItemTrackingRestClient } from "azure-devops-extension-api/WorkItemTracking";
 
 @Injectable()
-export class AreaPathsService {
+export class SearchService {
     private isLoadingData = new BehaviorSubject(false);
 
     isLoadingPage = this.isLoadingData.asObservable();

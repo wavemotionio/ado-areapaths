@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './components/home/home.component';
-import { AreaPathsComponent } from './components/areaPaths/areaPaths.component';
 import { routes } from './workItemList.routing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -16,7 +15,6 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AreaPathsService } from './services/areaPaths.service';
 
 @NgModule({
   imports: [
@@ -37,7 +35,7 @@ import { AreaPathsService } from './services/areaPaths.service';
     ReactiveFormsModule,
     MatTooltipModule
   ],
-  declarations: [HomeComponent, AreaPathsComponent],
-  providers: [AreaPathsService]
+  declarations: [HomeComponent]
 })
+
 export class WorkItemListModule { }
