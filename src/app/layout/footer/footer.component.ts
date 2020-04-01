@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import * as vssPkg from '../../../../../package.json';
+import * as vssPkg from '../../../../package.json';
 
 @Component({
   selector: '[app-footer]',
