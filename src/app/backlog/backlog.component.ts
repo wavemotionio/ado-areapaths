@@ -229,7 +229,7 @@ export class BacklogComponent implements OnInit {
     }
 
     async ngOnInit() {
-        let areaPath = this._Activatedroute.snapshot.params['areaPath'],
+        let areaPath = this._Activatedroute.snapshot.params['azurepath'],
             iterationPath = this._Activatedroute.snapshot.params['iterationPath'],
             workItemId = this._Activatedroute.snapshot.params['workItemId'];
 
