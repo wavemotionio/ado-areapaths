@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HomeComponent } from './components/home/home.component';
 import { AreaPathsComponent } from './components/areaPaths/areaPaths.component';
 import { routes } from './workItemList.routing';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,8 +22,6 @@ import { AreaPathsService } from './services/areaPaths.service';
   imports: [
     CommonModule,
     routes,
-    MatExpansionModule,
-    MatListModule,
     MatIconModule,
     MatBadgeModule,
     MatButtonModule,

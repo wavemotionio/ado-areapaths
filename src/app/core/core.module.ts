@@ -5,10 +5,8 @@ import { FooterComponent } from './components/footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip'
 
@@ -18,10 +16,8 @@ import { MatTooltipModule } from '@angular/material/tooltip'
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
-    MatListModule,
     MatIconModule,
     FlexLayoutModule,
-    MatInputModule,
     FormsModule,
     MatTooltipModule
   ],
