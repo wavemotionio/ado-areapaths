@@ -4,7 +4,8 @@ import { APP_BASE_HREF } from '@angular/common';
 
 const routes: Routes = [
   { path: '', redirectTo: 'search', pathMatch: 'full' },
-  { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) }
+  { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
+  { path: 'backlog', loadChildren: () => import('./backlog/backlog.module').then(m => m.BacklogModule) }
 ];
 
 @NgModule({
@@ -12,4 +13,5 @@ const routes: Routes = [
 	exports: [RouterModule],
 	providers: [{provide: APP_BASE_HREF, useValue: '/app'}]
 })
+
 export class AppRoutingModule { }

@@ -4,7 +4,7 @@ import {CollectionViewer, SelectionChange} from '@angular/cdk/collections';
 import {BehaviorSubject, Observable, merge } from 'rxjs';
 import {map} from 'rxjs/operators';
 import _ from 'lodash';
-import { RootDataSourceService } from "../../../shared/services/rootDataSource.service";
+import { RootDataSourceService } from "../shared/services/rootDataSource.service";
 import { ActivatedRoute } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
@@ -186,12 +186,12 @@ export class DynamicDataSource {
 }
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css']
+  selector: 'app-backlog',
+  templateUrl: './backlog.component.html',
+  styleUrls: ['./backlog.component.css']
 })
 
-export class HomeComponent implements OnInit {
+export class BacklogComponent implements OnInit {
     initialData: any;
     workItemStatesList: any = {};
     message:string;
