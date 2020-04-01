@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutModule } from './layout/layout.module';
-import { WorkItemListModule } from './workItemList/workItemList.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -17,7 +16,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     AppRoutingModule,
     LayoutModule,
     SharedModule,
-    WorkItemListModule,
     BrowserAnimationsModule,
     MatSidenavModule
   ],

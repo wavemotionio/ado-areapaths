@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeComponent } from './components/home/home.component';
-import { routes } from './workItemList.routing';
+
+import { SharedModule } from '../shared/shared.module';
+import { BacklogRoutingModule } from './backlog-routing.module';
+import { BacklogComponent } from './backlog.component';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,9 +20,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
+  declarations: [BacklogComponent],
   imports: [
     CommonModule,
-    routes,
+    BacklogRoutingModule,
+    SharedModule,
     MatIconModule,
     MatBadgeModule,
     MatButtonModule,
@@ -34,8 +39,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     MatTooltipModule
-  ],
-  declarations: [HomeComponent]
+  ]
 })
-
-export class WorkItemListModule { }
+export class BacklogModule { }
