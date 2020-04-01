@@ -1,0 +1,37 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+	<h1>
+		<small>Search</small>
+	</h1>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
+	<mat-spinner mode="indeterminate"></mat-spinner>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
+	<h4>No Data Found</h4>
+</div>
+
+<div *ngIf="!isLoading && dataSource.data.length > 0">
+	<form class="search-form">
+		<mat-form-field class="full-width">
+			<mat-icon matPrefix>search</mat-icon>
+			<input type="text"
+			placeholder="Find an area path or iteration"
+			aria-label="Find an area path or iteration"
+			matInput
+			[formControl]="myControl"
+			[matAutocomplete]="auto">
+			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+				<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+					{{option}}
+				</mat-option>
+			</mat-autocomplete>
+			<mat-error *ngIf="myControl.invalid">{{getErrorMessage()}}</mat-error>
+		</mat-form-field>
+		<div fxLayout="row" fxLayoutAlign="space-evenly center">
+			<button mat-raised-button color="primary" routerLink="/work/areaPath/{{myControl.value}}" routerLinkActive="active" matTooltip="find incomplete work items in selected area path">View</button>
+			<!-- <button mat-raised-button color="primary" (click)="addNewWorkItem(myControl.value)" matTooltip="add a new PBI to the selected area path">New PBI</button> -->
+		</div>
+	</form>
+</div>

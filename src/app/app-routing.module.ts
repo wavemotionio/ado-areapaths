@@ -3,7 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'areaPaths', pathMatch: 'full' }
+  { path: '', redirectTo: 'search', pathMatch: 'full' },
+  { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) }
 ];
 
 @NgModule({

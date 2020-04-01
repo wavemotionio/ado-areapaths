@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AreaPathsService } from '../../services/areaPaths.service';
+import { SearchService } from './search.service';
 import _ from 'lodash';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
@@ -16,12 +16,12 @@ interface AreaPathNode {
 }
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './areaPaths.component.html',
-    styleUrls: ['./areaPaths.component.css']
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css']
 })
 
-export class AreaPathsComponent implements OnInit {
+export class SearchComponent implements OnInit {
 
     myControl = new FormControl('', [Validators.required]);
     options: string[];
@@ -33,12 +33,12 @@ export class AreaPathsComponent implements OnInit {
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
     dataSource = new MatTreeNestedDataSource<AreaPathNode>();
 
-    constructor(private areaPathsService: AreaPathsService) {}
+    constructor(private searchService: SearchService) {}
 
     hasChild = (_: number, node: AreaPathNode) => !!node.children && node.children.length > 0;
 
     async ngOnInit() {
-        this.areaPathsService.getAreaPaths().then(data => {
+        this.searchService.getAreaPaths().then(data => {
             let test = _.get(data, 'areaPaths.children');
             
             this._flatten(test);
@@ -54,7 +54,7 @@ export class AreaPathsComponent implements OnInit {
             map(value => this._filter(value))
           );
 
-        this.areaPathsService.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
+        this.searchService.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
     }
 
     private _filter(value: string): string[] {

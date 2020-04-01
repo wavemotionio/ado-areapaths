@@ -9,12 +9,12 @@
   list-style-type: none;
 }
 
-.example-form {
+.search-form {
   min-width: 300px;
   max-width: 800px;
   width: 100%;
 }
 
-.example-full-width {
+.full-width {
   width: 100%;
 }
