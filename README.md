@@ -57,3 +57,190 @@ Update devDependencies
 "protractor": "*",
 "ts-node": "*",
 ```
+
+
+
+import * as React from "react";
+import * as SDK from "azure-devops-extension-sdk";
+import * as _ from "lodash";
+import "./AreaPaths.scss";
+
+import { Button } from "azure-devops-ui/Button";
+import { ObservableArray, ObservableValue } from "azure-devops-ui/Core/Observable";
+import { localeIgnoreCaseComparer } from "azure-devops-ui/Core/Util/String";
+import { Dropdown } from "azure-devops-ui/Dropdown";
+import { ListSelection } from "azure-devops-ui/List";
+import { IListBoxItem } from "azure-devops-ui/ListBox";
+import { Header } from "azure-devops-ui/Header";
+import { Page } from "azure-devops-ui/Page";
+import { TextField } from "azure-devops-ui/TextField";
+
+import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
+import { IWorkItemFormNavigationService, WorkItemTrackingRestClient, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
+
+import { showRootComponent } from "../Common";
+
+
+class AreaPathsContent extends React.Component<{}, {}> {
+
+    private workItemIdValue = new ObservableValue("1");
+    private workItemTypeValue = new ObservableValue("Bug");
+    private selection = new ListSelection();
+    private workItemTypes = new ObservableArray<IListBoxItem<string>>();
+    private workItems = new ObservableArray<any>();
+
+    constructor(props: {}) {
+        super(props);
+    }
+
+    public componentDidMount() {
+        SDK.init();
+        this.loadWorkItemTypes();
+        this.loadCommittedWithNoTasks();
+    }
+
+    public render(): JSX.Element {
+        return (
+            <Page className="sample-hub flex-grow">
+                <Header title="Work Item Open Sample" />
+                <div className="page-content">
+                    <div className="sample-form-section flex-row flex-center">
+                        <TextField className="sample-work-item-id-input" label="Existing work item id" value={this.workItemIdValue} onChange={(ev, newValue) => { this.workItemIdValue.value = newValue; }} />
+                        <Button className="sample-work-item-button" text="Open..." onClick={() => this.onOpenExistingWorkItemClick()} />
+                    </div>
+                    <div className="sample-form-section flex-row flex-center">
+                        <div className="flex-column">
+                            <label htmlFor="work-item-type-picker">New work item type:</label>
+                            <Dropdown<string>
+                                className="sample-work-item-type-picker"
+                                items={this.workItemTypes}
+                                onSelect={(event, item) => { this.workItemTypeValue.value = item.data! }}
+                                selection={this.selection}
+                            />
+                        </div>
+                        <Button className="sample-work-item-button" text="New..." onClick={() => this.onOpenNewWorkItemClick()} />
+                    </div>
+                </div>
+            </Page>
+        );
+    }
+
+    private async loadWorkItemTypes(): Promise<void> {
+
+        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService);
+        const project = await projectService.getProject();
+
+        let workItemTypeNames: string[];
+
+        if (!project) {
+            workItemTypeNames = [ "Issue" ];
+        }
+        else {
+            const client = getClient(WorkItemTrackingRestClient);
+            const types = await client.getWorkItemTypes(project.name);
+            workItemTypeNames = types.map(t => t.name);
+            workItemTypeNames.sort((a, b) => localeIgnoreCaseComparer(a, b));
+        }
+
+        this.workItemTypes.push(...workItemTypeNames.map(t => { return { id: t, data: t, text: t } }));
+        this.selection.select(0);
+    }
+
+    private async hydrateChildren(unpopulatedChildren: any, client: any, project: any): Promise<any> {
+        return new Promise(async resolve => {
+            let workItemsWithChildren = _.cloneDeep(unpopulatedChildren);
+
+            for (let i=0; i < workItemsWithChildren.length; i++) {
+
+                let populatedRelations = [];
+
+                for (let x=0; x < workItemsWithChildren[i]['relations'].length; x++) {
+
+                    let wiDetails = await client.getWorkItem(parseInt(workItemsWithChildren[i]['relations'][x]), project.name, [
+                        'System.WorkItemType',
+                        'System.State'
+                    ], undefined, 0);
+
+                    populatedRelations.push(wiDetails);
+
+                }
+
+                workItemsWithChildren[i]['relations'] = populatedRelations;
+            }
+
+            resolve(workItemsWithChildren);
+        });
+    }
+
+    private async loadCommittedWithNoTasks(): Promise<void> {
+        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService);
+        const project = await projectService.getProject();
+
+        let workItemsTemp: any[];
+
+        if (!project) {
+            workItemsTemp = [];
+        }
+        else {
+            const client = getClient(WorkItemTrackingRestClient);
+
+            //replace with another method of aggregating work items
+            let hydratedWorkItems = await client.getWorkItems([1,2,3,4,5,6,7,8,9,10,11,12], project.name, undefined, undefined, 1);
+
+            let workItemsWithChildren = _
+                .chain(hydratedWorkItems)
+                .reject((workitem: any) => workitem.fields['System.WorkItemType'] !== 'Product Backlog Item' || workitem.fields['System.State'] !== 'Committed')
+                .map((workitem: any) => {
+                    workitem.relations = _
+                        .chain(workitem.relations)
+                        .filter((relation: any) => relation.rel === 'System.LinkTypes.Hierarchy-Forward')
+                        .map((child: any) => _.last(child.url.split('/')))
+                        .value();
+
+                    return workitem;
+                })
+                .value();
+
+            let workItemsWithNoChildTasksActive = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
+                _.find(parentWorkItem.relations, (childItem: any) =>
+                    childItem.fields['System.WorkItemType'] === 'Task' &&
+                        (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress')
+                )
+            );
+
+            console.log('output: ', workItemsWithNoChildTasksActive);
+        }
+
+        // workItemsTemp.forEach((item) => {
+        //     console.log('new item: ' + JSON.stringify(item));
+        // });
+
+        // Find "relations" where item.rel === 'System.LinkTypes.Hierarchy-Forward'
+        // get ID with _.last(item.url.split('/'))
+        // get details with ID where
+            // fields.System.WorkItemType === 'Task'
+            // fields.System.State === 'To Do' || 'In Progress'
+
+        // https://dev.azure.com/wavemotionio/ado-tools/_apis/wit/workitems?ids=3,4,7&$expand=relations&api-version=5.1
+        // getWorkItems(ids: number[], project?: string, fields?: string[], asOf?: Date, expand?: WorkItemExpand, errorPolicy?: WorkItemErrorPolicy)
+
+
+    }
+
+    private async onOpenExistingWorkItemClick() {
+        const navSvc = await SDK.getService<IWorkItemFormNavigationService>(WorkItemTrackingServiceIds.WorkItemFormNavigationService);
+        navSvc.openWorkItem(parseInt(this.workItemIdValue.value));
+    };
+
+    private async onOpenNewWorkItemClick() {
+        const navSvc = await SDK.getService<IWorkItemFormNavigationService>(WorkItemTrackingServiceIds.WorkItemFormNavigationService);
+        navSvc.openNewWorkItem(this.workItemTypeValue.value, { 
+            Title: "Opened a work item from the Work Item Nav Service",
+            Tags: "extension;wit-service",
+            priority: 1,
+            "System.AssignedTo": SDK.getUser().name,
+         });
+    };
+}
+
+showRootComponent(<AreaPathsContent />);
