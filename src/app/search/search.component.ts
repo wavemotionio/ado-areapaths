@@ -86,6 +86,8 @@ export class SearchComponent implements OnInit {
     }
 
     pathTypeChanged(event?) {
+        this.myControl.reset();
+
         if (!event.checked) {
             this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
         } else {
