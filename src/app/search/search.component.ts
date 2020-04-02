@@ -10,6 +10,8 @@ import { map, startWith } from 'rxjs/operators';
 import * as SDK from "azure-devops-extension-sdk";
 import { IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 
+import { WhitespaceValidator } from '../shared/whitespace.validator';
+
 interface AreaPathNode {
   name: string;
   children?: AreaPathNode[];
@@ -23,7 +25,7 @@ interface AreaPathNode {
 
 export class SearchComponent implements OnInit {
 
-    myControl = new FormControl('', [Validators.required]);
+    myControl = new FormControl('', [Validators.required, WhitespaceValidator.notEmpty]);
     options: string[];
     filteredOptions: Observable<string[]>;
     flattenedArr = [];
@@ -38,6 +40,8 @@ export class SearchComponent implements OnInit {
     hasChild = (_: number, node: AreaPathNode) => !!node.children && node.children.length > 0;
 
     async ngOnInit() {
+        await SDK.ready();
+
         this.searchService.getAreaPaths().then(data => {
             let test = _.get(data, 'areaPaths.children');
             
@@ -88,6 +92,6 @@ export class SearchComponent implements OnInit {
     }
 
     getErrorMessage() {
-        return this.myControl.hasError('required') ? 'You must enter a valid path.' : '';
+        return this.myControl.hasError('required') || this.myControl.hasError('notEmpty') ? 'You must enter a valid path.' : '';
     }
 }

@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export class RootDataSourceService {
 
-    private messageSource = new BehaviorSubject("Technical\\UI Iteration");
+    private messageSource = new BehaviorSubject("");
 
     currentMessage = this.messageSource.asObservable();
 
