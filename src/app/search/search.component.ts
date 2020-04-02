@@ -57,13 +57,13 @@ export class SearchComponent implements OnInit {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
                     // dataManager.setValue('adoAreapathsSearchType', 'area', { scopeType: 'User' });
-                    this.updateTypeahead('area');
+                    this.updateTypeahead('areaPaths');
 
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
                     // dataManager.setValue('adoAreapathsSearchType', 'iteration', { scopeType: 'User' });
-                    this.updateTypeahead('iteration');
+                    this.updateTypeahead('iterations');
                 }
             });
 
