@@ -2,6 +2,15 @@
 	<h1>
 		<small>Search</small>
 	</h1>
+
+	<mat-slide-toggle
+		class="toggle-path-type"
+		color="warn"
+		[(ngModel)]="pathTypeChecked"
+		labelPosition="before"
+		(change)="pathTypeChanged($event)">
+    	{{pathType}} Paths
+    </mat-slide-toggle>
 </div>
 
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
@@ -30,7 +39,7 @@
 			<mat-error *ngIf="myControl.invalid">{{getErrorMessage()}}</mat-error>
 		</mat-form-field>
 		<div fxLayout="row" fxLayoutAlign="space-evenly center">
-			<button type="submit" [disabled]="myControl.invalid" routerLink="/backlog/{{myControl.value}}" routerLinkActive="active" mat-raised-button color="primary" matTooltip="View Path">
+			<button type="submit" [disabled]="myControl.invalid" (click)="viewBacklog(myControl.value, pathTypeChecked)" mat-raised-button color="primary" matTooltip="View Path">
 				View
 			</button>
 			<!-- <button mat-raised-button color="primary" (click)="addNewWorkItem(myControl.value)" matTooltip="add a new PBI to the selected area path">New PBI</button> -->
