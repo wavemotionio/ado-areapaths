@@ -34,7 +34,6 @@ export class SearchComponent implements OnInit {
     options: string[];
     pathType: any;
     filteredOptions: Observable<string[]>;
-    flattenedArr = [];
     pathTypeChecked: boolean;
 
     areaPathsAndIterations: any;
@@ -77,12 +76,11 @@ export class SearchComponent implements OnInit {
     }
 
     updateTypeahead(pathtype) {
-        this.options = [];
         this.searchService.getAreaPaths().then(data => {
-            let workItems = _.get(data, `${pathtype}.children`);
+            let workItems = _.get(data, `${pathtype}.children`),
+                flattenedWorkItems = [];
 
-            this._flatten(workItems);
-            this.options = this.flattenedArr;
+            this.options = this._flatten(workItems, flattenedWorkItems);
             this.dataSource.data = workItems || [];
         });
     }
@@ -107,14 +105,16 @@ export class SearchComponent implements OnInit {
         return this.options.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-    private _flatten(arr) {
-        _.each(arr, (item) => {
-            this.flattenedArr.push(item['path']);
+    private _flatten(workItems, allItems) {
+        _.each(workItems, (item) => {
+            allItems.push(item['path']);
 
             if (item.children && item.children.length > 0) {
-                this._flatten(item.children);
+                this._flatten(item.children, allItems);
             }
         });
+
+        return allItems;
     }
 
     // async addNewWorkItem(areaPath) {
