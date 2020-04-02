@@ -196,7 +196,7 @@ export class BacklogComponent implements OnInit {
     workItemStatesList: any = {};
     message:string;
 
-    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, _Activatedroute: ActivatedRoute) {
+    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
         this.workItemStatesList['Under Review'] = 'fiber_new';
