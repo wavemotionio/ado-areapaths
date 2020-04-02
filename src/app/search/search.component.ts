@@ -77,6 +77,7 @@ export class SearchComponent implements OnInit {
     }
 
     updateTypeahead(pathtype) {
+        this.options = [];
         this.searchService.getAreaPaths().then(data => {
             let workItems = _.get(data, `${pathtype}.children`);
 
