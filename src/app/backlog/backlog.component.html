@@ -5,7 +5,7 @@
         <small>{{message}}</small>
     </h2>
     <button mat-fab color="primary" matTooltip="refresh area">
-        <mat-icon (click)="setAreaPathData()" aria-label="refresh">refresh</mat-icon>
+        <mat-icon (click)="setAreaPathData(_Activatedroute.snapshot.params['azurepath'], _Activatedroute.snapshot.params['pathtype'])" aria-label="refresh">refresh</mat-icon>
     </button>
 </div>
 <div *ngIf="!isLoading && dataSource.data.length === 0">

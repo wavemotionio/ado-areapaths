@@ -196,7 +196,7 @@ export class BacklogComponent implements OnInit {
     workItemStatesList: any = {};
     message:string;
 
-    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, private _Activatedroute: ActivatedRoute) {
+    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
         this.workItemStatesList['Under Review'] = 'fiber_new';
@@ -229,14 +229,13 @@ export class BacklogComponent implements OnInit {
     }
 
     async ngOnInit() {
-        let areaPath = this._Activatedroute.snapshot.params['azurepath'],
-            iterationPath = this._Activatedroute.snapshot.params['iterationPath'],
-            workItemId = this._Activatedroute.snapshot.params['workItemId'];
+        let azurePath = this._Activatedroute.snapshot.params['azurepath'],
+            pathType = this._Activatedroute.snapshot.params['pathtype'];
 
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
 
-        if (_.isString(areaPath)) {
-            this.rootDataSourceService.changeMessage('Path: ' + areaPath);
+        if (_.isString(azurePath)) {
+            this.rootDataSourceService.changeMessage('Path: ' + azurePath);
         }
 
         await SDK.ready();
@@ -248,10 +247,8 @@ export class BacklogComponent implements OnInit {
         });
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
-        if (!_.isString(areaPath) && !_.isString(iterationPath) && !_.isString(workItemId)) {
-            // this.database.setInitialQuery();
-        } else if (_.isString(areaPath)) {
-            this.setAreaPathData();
+        if (_.isString(azurePath)) {
+            this.setAreaPathData(azurePath, pathType);
         }
     }
 
@@ -267,9 +264,14 @@ export class BacklogComponent implements OnInit {
 
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
-    setAreaPathData() {
-        const areaPath = this._Activatedroute.snapshot.params['azurepath'];
-        this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.AreaPath] UNDER '${areaPath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+    setAreaPathData(azurePath, pathType) {
+        let systemPathType = 'AreaPath';
+
+        if (pathType === 'iteration') {
+            systemPathType = 'IterationPath';
+        }
+
+        this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
     }
 
     filterChanged(filterText: string) {
