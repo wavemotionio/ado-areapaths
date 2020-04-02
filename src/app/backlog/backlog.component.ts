@@ -245,6 +245,7 @@ export class BacklogComponent implements OnInit {
                 return _.isUndefined(flattenedNode.item);
             });
         });
+
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
         if (_.isString(azurePath)) {
@@ -265,13 +266,16 @@ export class BacklogComponent implements OnInit {
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
     setAreaPathData(azurePath, pathType) {
-        let systemPathType = 'AreaPath';
+        let systemPathType = 'AreaPath',
+            customQuery = null;
 
         if (pathType === 'iteration') {
             systemPathType = 'IterationPath';
         }
 
-        this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+        customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+
+        this.database.setCustomWIQLQuery(customQuery);
     }
 
     filterChanged(filterText: string) {
