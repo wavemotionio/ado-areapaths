@@ -256,9 +256,9 @@ export class BacklogComponent implements OnInit {
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
-            this.setAreaPathData(azurePath, pathType, true);
+            this.setAreaPathData(azurePath, pathType);
         } else {
-            this.setAreaPathData(azurePath, pathType, false);
+            this.setAreaPathData(azurePath, pathType);
         }
     }
 
@@ -282,9 +282,10 @@ export class BacklogComponent implements OnInit {
 
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
-    setAreaPathData(azurePath, pathType, isCommittedOnly) {
+    setAreaPathData(azurePath, pathType) {
         let systemPathType = 'AreaPath',
-            customQuery = null;
+            customQuery = null,
+            isCommittedOnly = _.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled';
 
         if (pathType === 'iteration') {
             systemPathType = 'IterationPath';
