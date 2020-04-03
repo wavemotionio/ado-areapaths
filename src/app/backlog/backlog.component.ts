@@ -321,6 +321,10 @@ export class BacklogComponent implements OnInit {
         }
     }
 
+    exportData() {
+        console.log(this.dataSource.data);
+    }
+
     isLoading: boolean = false;
 
     treeControl: FlatTreeControl<DynamicFlatNode>;
