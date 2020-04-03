@@ -43,17 +43,7 @@ https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
 # Development Notes
 
 ## To Dos
+1. Save user settings
 1. Update to support other projects types other than SCRUM (additional work item types)
-1. Add iterations option
-2. Update devDeps
-```
-Update devDependencies
-"eslint": "*",
-"karma": "*",
-"karma-chrome-launcher": "*",
-"karma-coverage-istanbul-reporter": "*",
-"karma-jasmine": "*",
-"karma-jasmine-html-reporter": "*",
-"protractor": "*",
-"ts-node": "*",
+1. Update devDeps
 ```

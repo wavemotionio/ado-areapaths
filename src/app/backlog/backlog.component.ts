@@ -5,7 +5,7 @@ import {BehaviorSubject, Observable, merge } from 'rxjs';
 import {map} from 'rxjs/operators';
 import _ from 'lodash';
 import { RootDataSourceService } from "../shared/services/rootDataSource.service";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
@@ -37,7 +37,33 @@ export class DynamicDatabase {
         }));
     }
 
-    async setCustomWIQLQuery(query: string): Promise<void> {
+    private async hydrateChildren(unpopulatedChildren: any, client: any, project: any): Promise<any> {
+        return new Promise(async resolve => {
+            let workItemsWithChildren = _.cloneDeep(unpopulatedChildren);
+
+            for (let i=0; i < workItemsWithChildren.length; i++) {
+
+                let populatedRelations = [];
+
+                for (let x=0; x < workItemsWithChildren[i]['relations'].length; x++) {
+
+                    let wiDetails = await client.getWorkItem(parseInt(workItemsWithChildren[i]['relations'][x]), project.name, [
+                        'System.WorkItemType',
+                        'System.State'
+                    ], undefined, 0);
+
+                    populatedRelations.push(wiDetails);
+
+                }
+
+                workItemsWithChildren[i]['relations'] = populatedRelations;
+            }
+
+            resolve(workItemsWithChildren);
+        });
+    }
+
+    async setCustomWIQLQuery(query: string, stalledOnly: boolean): Promise<void> {
         this.isLoadingData.next(true);
 
         const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
@@ -58,14 +84,39 @@ export class DynamicDatabase {
 
         for(let i=0; i<chunks.length; i++) {
             const postRequest = {
-                $expand: 4,
-                asOf: null,
-                errorPolicy: 2,
-                fields: null,
-                ids: chunks[i] || []
-            },
-            workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [],
-            workItemsListFormatted = formatWorkItems(workItemsList);
+                    $expand: 4,
+                    asOf: null,
+                    errorPolicy: 2,
+                    fields: null,
+                    ids: chunks[i] || []
+                };
+
+            let workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [];
+
+            if (stalledOnly) {
+                let workItemsWithChildren = _
+                    .chain(workItemsList)
+                    // .reject((workitem: any) => workitem.fields['System.WorkItemType'] !== 'Product Backlog Item' || workitem.fields['System.State'] !== 'Committed')
+                    .map((workitem: any) => {
+                        workitem.relations = _
+                            .chain(workitem.relations)
+                            .filter((relation: any) => relation.rel === 'System.LinkTypes.Hierarchy-Forward')
+                            .map((child: any) => _.last(child.url.split('/')))
+                            .value();
+
+                        return workitem;
+                    })
+                    .value();
+
+                workItemsList = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
+                    _.find(parentWorkItem.relations, (childItem: any) =>
+                        childItem.fields['System.WorkItemType'] === 'Task' &&
+                            (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress')
+                    )
+                );
+            }
+
+            let workItemsListFormatted = formatWorkItems(workItemsList);
 
             allWorkItems = _.concat(allWorkItems, workItemsListFormatted);
         }
@@ -195,8 +246,10 @@ export class BacklogComponent implements OnInit {
     initialData: any;
     workItemStatesList: any = {};
     message:string;
+    backlogTypeChecked: boolean;
+    backlogType: string;
 
-    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute) {
+    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute, private router: Router) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
         this.workItemStatesList['Under Review'] = 'fiber_new';
@@ -233,9 +286,14 @@ export class BacklogComponent implements OnInit {
             pathType = this._Activatedroute.snapshot.params['pathtype'];
 
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
+        this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
-        if (_.isString(azurePath)) {
-            this.rootDataSourceService.changeMessage('Path: ' + azurePath);
+        if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
+            this.backlogTypeChecked = true;
+            this.backlogType = 'Stalled';
+        } else {
+            this.backlogTypeChecked = false;
+            this.backlogType = 'In Progress';
         }
 
         await SDK.ready();
@@ -245,11 +303,41 @@ export class BacklogComponent implements OnInit {
                 return _.isUndefined(flattenedNode.item);
             });
         });
+
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
-        if (_.isString(azurePath)) {
+        if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
+            this.setAreaPathData(azurePath, pathType);
+        } else {
             this.setAreaPathData(azurePath, pathType);
         }
+    }
+
+    backlogTypeChanged(event?) {
+        if (!event.checked) {
+            this.router.navigate(["../"], { relativeTo: this._Activatedroute });
+        } else {
+            this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute });
+        }
+    }
+
+    async exportData() {
+        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
+            project = await projectService.getProject(),
+            organization = document.referrer.toString().split('.')[0].replace('https://', ''),
+            wItemIds = _.map(this.dataSource.data, itemRow => `https://${organization}.visualstudio.com/${project.name}/_workitems/edit/${itemRow.item.id}/`),
+            hiddenElement = document.createElement('a');
+
+        let lineArray = '';
+
+        _.each(wItemIds, (workitem) => {
+            lineArray += workitem + '\n';
+        });
+
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(lineArray.replace(/,\s*$/, ""));
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'workItemsList.csv';
+        hiddenElement.click();
     }
 
     isLoading: boolean = false;
@@ -265,13 +353,21 @@ export class BacklogComponent implements OnInit {
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
     setAreaPathData(azurePath, pathType) {
-        let systemPathType = 'AreaPath';
+        let systemPathType = 'AreaPath',
+            customQuery = null,
+            isStalledOnly = _.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled';
 
         if (pathType === 'iteration') {
             systemPathType = 'IterationPath';
         }
 
-        this.database.setCustomWIQLQuery(`SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`);
+        if (isStalledOnly) {
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] CONTAINS 'Committed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+        } else {
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+        }
+
+        this.database.setCustomWIQLQuery(customQuery, isStalledOnly);
     }
 
     filterChanged(filterText: string) {

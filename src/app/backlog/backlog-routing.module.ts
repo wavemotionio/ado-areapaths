@@ -11,6 +11,10 @@ const routes: Routes = [
 		{
 	        path: ':pathtype/:azurepath',
 	        component: BacklogComponent
+	    },
+	    {
+	        path: ':pathtype/:azurepath/stalled',
+	        component: BacklogComponent
 	    }
 	];
 

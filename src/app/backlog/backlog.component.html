@@ -1,12 +1,31 @@
-<div fxLayout="row" fxLayoutAlign="space-between center">
-    <h2>
+<div fxflex fxLayout="column" fxLayout.gt-xs="row">
+
+    <h2 fxFlex fxFlexOrder="2" fxFlexOrder.gt-xs="1" >
         Backlog Viewer
         <br>
         <small>{{message}}</small>
     </h2>
-    <button mat-fab color="primary" matTooltip="refresh area">
-        <mat-icon (click)="setAreaPathData(_Activatedroute.snapshot.params['azurepath'], _Activatedroute.snapshot.params['pathtype'])" aria-label="refresh">refresh</mat-icon>
-    </button>
+
+    <div fxLayoutAlign="end center" fxFlex fxLayout="row" fxFlexOrder="1" fxFlexOrder.gt-xs="2">
+        <mat-slide-toggle
+            class="toggle-path-type"
+            color="warn"
+            matTooltip="in progress/stalled"
+            [(ngModel)]="backlogTypeChecked"
+            (change)="backlogTypeChanged($event)"
+            labelPosition="before">
+            {{backlogType}}
+        </mat-slide-toggle>
+        <span style="padding-left:20px;"></span>
+        <button mat-button color="primary" matTooltip="export" aria-label="export" (click)="exportData()" [disabled]="this.dataSource.data.length < 1">
+            <mat-icon>cloud_download</mat-icon> export
+        </button>
+
+        <button mat-button color="primary" matTooltip="refresh area" aria-label="refresh" (click)="setAreaPathData(_Activatedroute.snapshot.params['azurepath'], _Activatedroute.snapshot.params['pathtype'])" aria-label="refresh">
+            <mat-icon>refresh</mat-icon> refresh
+        </button>
+    </div>
+
 </div>
 <div *ngIf="!isLoading && dataSource.data.length === 0">
     <button mat-button color="primary" routerLink="/search" routerLinkActive="active" matTooltip="go back to search">
