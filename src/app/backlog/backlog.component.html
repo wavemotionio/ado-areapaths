@@ -17,7 +17,7 @@
             {{backlogType}}
         </mat-slide-toggle>
         <span style="padding-left:20px;"></span>
-        <button mat-button color="primary" matTooltip="export" aria-label="export" (click)="exportData()">
+        <button mat-button color="primary" matTooltip="export" aria-label="export" (click)="exportData()" [disabled]="this.dataSource.data.length < 1">
             <mat-icon>cloud_download</mat-icon> export
         </button>
 

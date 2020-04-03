@@ -324,7 +324,7 @@ export class BacklogComponent implements OnInit {
     async exportData() {
         const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
             project = await projectService.getProject(),
-            organization = window.location.hostname.split['.'][0],
+            organization = document.referrer.toString().split('.')[0].replace('https://', ''),
             wItemIds = _.map(this.dataSource.data, itemRow => `https://${organization}.visualstudio.com/${project.name}/_workitems/edit/${itemRow.item.id}/`),
             hiddenElement = document.createElement('a');
 
