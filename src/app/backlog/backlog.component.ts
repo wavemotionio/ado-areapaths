@@ -321,8 +321,23 @@ export class BacklogComponent implements OnInit {
         }
     }
 
-    exportData() {
-        console.log(this.dataSource.data);
+    async exportData() {
+        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService),
+            project = await projectService.getProject(),
+            organization = window.location.hostname.split['.'][0],
+            wItemIds = _.map(this.dataSource.data, itemRow => `https://${organization}.visualstudio.com/${project.name}/_workitems/edit/${itemRow.item.id}/`),
+            hiddenElement = document.createElement('a');
+
+        let lineArray = '';
+
+        _.each(wItemIds, (workitem) => {
+            lineArray += workitem + '\n';
+        });
+
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(lineArray.replace(/,\s*$/, ""));
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'workItemsList.csv';
+        hiddenElement.click();
     }
 
     isLoading: boolean = false;
