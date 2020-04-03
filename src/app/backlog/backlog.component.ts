@@ -5,7 +5,7 @@ import {BehaviorSubject, Observable, merge } from 'rxjs';
 import {map} from 'rxjs/operators';
 import _ from 'lodash';
 import { RootDataSourceService } from "../shared/services/rootDataSource.service";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
 import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
@@ -195,8 +195,10 @@ export class BacklogComponent implements OnInit {
     initialData: any;
     workItemStatesList: any = {};
     message:string;
+    backlogTypeChecked: boolean;
+    backlogType: string;
 
-    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute) {
+    constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute, private router: Router) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
         this.workItemStatesList['Under Review'] = 'fiber_new';
@@ -233,9 +235,14 @@ export class BacklogComponent implements OnInit {
             pathType = this._Activatedroute.snapshot.params['pathtype'];
 
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
+        this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
-        if (_.isString(azurePath)) {
-            this.rootDataSourceService.changeMessage('Path: ' + azurePath);
+        if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
+            this.backlogTypeChecked = true;
+            this.backlogType = 'Stalled';
+        } else {
+            this.backlogTypeChecked = false;
+            this.backlogType = 'In Progress';
         }
 
         await SDK.ready();
@@ -248,8 +255,18 @@ export class BacklogComponent implements OnInit {
 
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
-        if (_.isString(azurePath)) {
-            this.setAreaPathData(azurePath, pathType);
+        if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
+            this.setAreaPathData(azurePath, pathType, true);
+        } else {
+            this.setAreaPathData(azurePath, pathType, false);
+        }
+    }
+
+    backlogTypeChanged(event?) {
+        if (!event.checked) {
+            this.router.navigate(["../"], { relativeTo: this._Activatedroute });
+        } else {
+            this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute });
         }
     }
 
@@ -265,7 +282,7 @@ export class BacklogComponent implements OnInit {
 
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
-    setAreaPathData(azurePath, pathType) {
+    setAreaPathData(azurePath, pathType, isCommittedOnly) {
         let systemPathType = 'AreaPath',
             customQuery = null;
 
@@ -273,7 +290,11 @@ export class BacklogComponent implements OnInit {
             systemPathType = 'IterationPath';
         }
 
-        customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+        if (isCommittedOnly) {
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] CONTAINS 'Committed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+        } else {
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+        }
 
         this.database.setCustomWIQLQuery(customQuery);
     }
