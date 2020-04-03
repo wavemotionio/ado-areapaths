@@ -89,34 +89,32 @@ export class DynamicDatabase {
                     errorPolicy: 2,
                     fields: null,
                     ids: chunks[i] || []
-                },
-                workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [];
+                };
 
-                if (stalledOnly) {
-                    console.log(stalledOnly);
-                    let workItemsWithChildren = _
-                        .chain(workItemsList)
-                        // .reject((workitem: any) => workitem.fields['System.WorkItemType'] !== 'Product Backlog Item' || workitem.fields['System.State'] !== 'Committed')
-                        .map((workitem: any) => {
-                            workitem.relations = _
-                                .chain(workitem.relations)
-                                .filter((relation: any) => relation.rel === 'System.LinkTypes.Hierarchy-Forward')
-                                .map((child: any) => _.last(child.url.split('/')))
-                                .value();
+            let workItemsList = postRequest.ids.length > 0 ? await client.getWorkItemsBatch(postRequest, project.name) : [];
 
-                            return workitem;
-                        })
-                        .value();
+            if (stalledOnly) {
+                let workItemsWithChildren = _
+                    .chain(workItemsList)
+                    // .reject((workitem: any) => workitem.fields['System.WorkItemType'] !== 'Product Backlog Item' || workitem.fields['System.State'] !== 'Committed')
+                    .map((workitem: any) => {
+                        workitem.relations = _
+                            .chain(workitem.relations)
+                            .filter((relation: any) => relation.rel === 'System.LinkTypes.Hierarchy-Forward')
+                            .map((child: any) => _.last(child.url.split('/')))
+                            .value();
 
-                    let workItemsWithNoChildTasksActive = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
-                        _.find(parentWorkItem.relations, (childItem: any) =>
-                            childItem.fields['System.WorkItemType'] === 'Task' &&
-                                (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress')
-                        )
-                    );
+                        return workitem;
+                    })
+                    .value();
 
-                    console.log('output: ', workItemsWithNoChildTasksActive, workItemsList);
-                }
+                workItemsList = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
+                    _.find(parentWorkItem.relations, (childItem: any) =>
+                        childItem.fields['System.WorkItemType'] === 'Task' &&
+                            (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress')
+                    )
+                );
+            }
 
             let workItemsListFormatted = formatWorkItems(workItemsList);
 
@@ -292,7 +290,7 @@ export class BacklogComponent implements OnInit {
 
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
             this.backlogTypeChecked = true;
-            this.backlogType = 'Committed Only';
+            this.backlogType = 'Stalled';
         } else {
             this.backlogTypeChecked = false;
             this.backlogType = 'In Progress';
