@@ -239,7 +239,7 @@ export class BacklogComponent implements OnInit {
 
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
             this.backlogTypeChecked = true;
-            this.backlogType = 'Stalled';
+            this.backlogType = 'Committed Only';
         } else {
             this.backlogTypeChecked = false;
             this.backlogType = 'In Progress';
