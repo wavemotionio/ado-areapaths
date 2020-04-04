@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { FormControl, Validators } from '@angular/forms';
@@ -51,17 +51,21 @@ export class SearchComponent implements OnInit {
         let adoDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService),
             dataManager = await adoDataService.getExtensionDataManager(SDK.getExtensionContext().extensionId, SDK.getAccessToken().toString());
 
+            console.log('dataManager', dataManager);
+
         this._Activatedroute.queryParams
             .subscribe(async params => {
                 if (!params.pathtype || params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
-                    dataManager.setValue('adoAzurePathsSearchType', 'area', { scopeType: 'User' });
+                    let setStorage = dataManager.setValue('adoAzurePathsSearchType', 'area', { scopeType: 'User' });
+                    console.log('area: ', setStorage);
                     this.updateTypeahead('areaPaths');
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
-                    dataManager.setValue('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' });
+                    let setStorage = dataManager.setValue('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' });
+                    console.log('iteration', setStorage);
                     this.updateTypeahead('iterations');
                 }
             });
