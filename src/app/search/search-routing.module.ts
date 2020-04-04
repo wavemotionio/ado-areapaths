@@ -7,8 +7,8 @@ import { SearchHistoryGuard } from './search-history.guard';
 const routes: Routes = [
 		{
 	        path: '',
-	        component: SearchComponent,
-	        canActivate: [SearchHistoryGuard]
+	        component: SearchComponent
+	        // canActivate: [SearchHistoryGuard]
 	    }
 	];
 
