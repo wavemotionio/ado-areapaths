@@ -4,7 +4,7 @@
     "publisher": "wavemotionio",
     "version": "2.8.10",
     "name": "Azure Paths Search",
-    "description": "This extension allows you to search and view area paths and iteration paths in azure devops.",
+    "description": "This extension allows you to search the area paths and iteration paths in azure devops.",
     "public": true,
     "categories": ["Azure Boards"],
     "targets": [

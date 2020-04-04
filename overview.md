@@ -1,4 +1,4 @@
-This extension allows you to search and view area and iteration paths of Azure DevOps without creating and maintaining custom queries. Once enabled, the `Azure Paths Search` hub will appear within the `Boards` hub of Azure DevOps. *The feature flag defaults to true but can be toggled off.*
+This extension allows you to search and view the area paths and iteration paths of Azure DevOps without creating and maintaining custom queries. Once enabled, the `Azure Paths Search` hub will appear within the `Boards` hub of Azure DevOps. *The feature flag defaults to true but can be toggled off.*
 
 ## How to use
 

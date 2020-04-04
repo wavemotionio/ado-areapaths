@@ -43,6 +43,5 @@ https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
 # Development Notes
 
 ## To Dos
-1. Save user settings
 1. Update devDeps
 ```
