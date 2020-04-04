@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "ado-areapaths",
     "publisher": "wavemotionio",
-    "version": "3.0.4",
+    "version": "3.0.5",
     "name": "Azure Paths Search",
     "description": "This extension allows you to search the area paths and iteration paths in azure devops.",
     "public": true,
