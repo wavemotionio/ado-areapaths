@@ -3,8 +3,8 @@
     "id": "ado-areapaths",
     "publisher": "wavemotionio",
     "version": "2.8.5",
-    "name": "Area Paths Viewer",
-    "description": "This extension allows you to search and view area paths in azure devops.",
+    "name": "Azure Paths Search",
+    "description": "This extension allows you to search and view area paths and iteration paths in azure devops.",
     "public": true,
     "categories": ["Azure Boards"],
     "targets": [
@@ -16,10 +16,10 @@
         {
             "id": "feature-areapaths",
             "type": "ms.vss-web.feature",
-            "description": "Show the AreaPaths hub in the Boards hub group",
+            "description": "Show the Azure Paths hub in the Boards hub group",
             "targets": [ "ms.vss-web.managed-features", "ms.vss-web.managed-features-onprem" ],
             "properties": {
-                "name": "Feature AreaPaths",
+                "name": "Azure Paths Search",
                 "userConfigurable": true,
                 "hostConfigurable": true,
                 "defaultState": true
@@ -38,7 +38,7 @@
                 "ms.vss-features.host-dialog-service"
             ],
             "properties": {
-                "name": "Area Paths",
+                "name": "Azure Paths Search",
                 "uri": "dist/index.html",
                 "icon": {
                     "light": "asset://static/search-light.png",
