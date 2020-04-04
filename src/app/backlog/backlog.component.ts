@@ -96,7 +96,6 @@ export class DynamicDatabase {
             if (stalledOnly) {
                 let workItemsWithChildren = _
                     .chain(workItemsList)
-                    // .reject((workitem: any) => workitem.fields['System.WorkItemType'] !== 'Product Backlog Item' || workitem.fields['System.State'] !== 'Committed')
                     .map((workitem: any) => {
                         workitem.relations = _
                             .chain(workitem.relations)
@@ -362,9 +361,9 @@ export class BacklogComponent implements OnInit {
         }
 
         if (isStalledOnly) {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] CONTAINS 'Committed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND [System.State] CONTAINS 'Committed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         } else {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug' ) AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         }
 
         this.database.setCustomWIQLQuery(customQuery, isStalledOnly);
