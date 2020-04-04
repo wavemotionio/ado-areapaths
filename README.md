@@ -44,6 +44,5 @@ https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
 
 ## To Dos
 1. Save user settings
-1. Update to support other projects types other than SCRUM (additional work item types)
 1. Update devDeps
 ```
