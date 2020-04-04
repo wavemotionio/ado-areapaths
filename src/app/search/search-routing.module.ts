@@ -5,11 +5,6 @@ import { SearchComponent } from './search.component';
 import { SearchHistoryGuard } from './search-history.guard';
 
 const routes: Routes = [
-		// {
-		// 	path: '',
-		// 	redirectTo: 'areapaths',
-		// 	pathMatch: 'full'
-		// },
 		{
 	        path: '',
 	        component: SearchComponent,

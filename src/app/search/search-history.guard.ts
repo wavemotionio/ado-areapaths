@@ -20,23 +20,13 @@ export class SearchHistoryGuard implements CanActivate {
         const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
         this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
-        // this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
-        //     console.log('user setting saved: ', 'area');
-        // });
         let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
 
         if (!searchTypeHistory || searchTypeHistory === 'iteration') {
-
-            console.log('guard activated, redirect to iteration');
-            //return this.router.parseUrl('/notauthorized');
-
-            return true;
-
+            return this.router.parseUrl('/search?pathtype=iteration');
         } else if (searchTypeHistory === 'area') {
 
-            console.log('guard activated, redirect to area');
-
-            return true;
+            return this.router.parseUrl('/search?pathtype=area');
         }
     }
 }
