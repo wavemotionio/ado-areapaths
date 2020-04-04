@@ -1,6 +1,6 @@
 {
   "name": "ado-areapaths",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "scripts": {
     "clean": "npx rimraf ./dist",
     "compile": "npm run clean && ng build --prod",
