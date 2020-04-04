@@ -110,7 +110,7 @@ export class DynamicDatabase {
                 workItemsList = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
                     _.find(parentWorkItem.relations, (childItem: any) =>
                         childItem.fields['System.WorkItemType'] === 'Task' &&
-                            (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress')
+                            (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress' || childItem.fields['System.State'] === 'Active')
                     )
                 );
             }
