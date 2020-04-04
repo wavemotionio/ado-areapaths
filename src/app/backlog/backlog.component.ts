@@ -250,6 +250,7 @@ export class BacklogComponent implements OnInit {
 
     constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute, private router: Router) {
         this.workItemStatesList['New'] = 'fiber_new';
+        this.workItemStatesList['Proposed'] = 'fiber_new';
         this.workItemStatesList['Ready for review'] = 'fiber_new';
         this.workItemStatesList['Under Review'] = 'fiber_new';
         this.workItemStatesList['Needs Design'] = 'fiber_new';
@@ -272,6 +273,8 @@ export class BacklogComponent implements OnInit {
         this.workItemStatesList['Exception'] = 'cached';
 
         this.workItemStatesList['Done'] = 'done';
+        this.workItemStatesList['Closed'] = 'done';
+        this.workItemStatesList['Resolved'] = 'done';
 
         this.workItemStatesList['Removed'] = 'delete_forever';
 
@@ -364,7 +367,7 @@ export class BacklogComponent implements OnInit {
         if (isStalledOnly) {
             customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         } else {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' AND [System.State] NOT CONTAINS 'Closed' AND [System.State] NOT CONTAINS 'Resolved' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         }
 
         this.database.setCustomWIQLQuery(customQuery, isStalledOnly);
