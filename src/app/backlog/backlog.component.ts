@@ -259,6 +259,7 @@ export class BacklogComponent implements OnInit {
         this.workItemStatesList['Approved'] = 'thumb_up';
 
         this.workItemStatesList['In Progress'] = 'trending_up';
+        this.workItemStatesList['Active'] = 'trending_up';
         this.workItemStatesList['Committed'] = 'trending_up';
         this.workItemStatesList['Development Complete'] = 'trending_up';
         this.workItemStatesList['Validated in Lab'] = 'trending_up';
@@ -361,7 +362,7 @@ export class BacklogComponent implements OnInit {
         }
 
         if (isStalledOnly) {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND [System.State] CONTAINS 'Committed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         } else {
             customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         }
