@@ -50,18 +50,18 @@ export class SearchComponent implements OnInit {
         const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
         this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
-        let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
-
-        if (searchTypeHistory && this._Activatedroute.snapshot.queryParams['pathtype'] !== searchTypeHistory) {
-            if (searchTypeHistory === 'area') {
-                this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
-            } else {
-                this.router.navigate(['/search'], { queryParams: { pathtype: 'iteration' } });
-            }
-        }
-
         this._Activatedroute.queryParams
             .subscribe(async params => {
+                let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
+
+                if (searchTypeHistory && params.pathtype !== searchTypeHistory) {
+                    if (searchTypeHistory === 'area') {
+                        this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
+                    } else {
+                        this.router.navigate(['/search'], { queryParams: { pathtype: 'iteration' } });
+                    }
+                }
+
                 if (!params.pathtype || params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
