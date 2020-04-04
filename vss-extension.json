@@ -41,8 +41,8 @@
                 "name": "Area Paths",
                 "uri": "dist/index.html",
                 "icon": {
-                    "light": "logo.png",
-                    "dark": "logo.png"
+                    "light": "asset://static/search-light.png",
+                    "dark": "asset://static/search-dark.png"
                 }
             },
             "constraints": [
@@ -64,6 +64,10 @@
         }
     },
     "files": [
+        {
+            "path": "static",
+            "addressable": true
+        },
         {
             "path": "dist",
             "addressable": true
