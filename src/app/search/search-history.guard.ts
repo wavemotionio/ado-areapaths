@@ -20,21 +20,22 @@ export class SearchHistoryGuard implements CanActivate {
         const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
         this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
-        let searchTypeHistory = null; // await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
+        let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
 
         if (!searchTypeHistory || searchTypeHistory === 'area') {
             // set history here.
-            this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
-                console.log('user setting saved: ', 'area');
-            });
+            // this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
+            //     console.log('user setting saved: ', 'area');
+            // });
+            console.log('area', next, state, searchTypeHistory);
 
-            return this.router.parseUrl('/search?pathtype=area');
+            return true;
         } else if (searchTypeHistory === 'iteration') {
-            this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {
-                console.log('user setting saved: ', 'iteration');
-            });
-
-            return this.router.parseUrl('/search?pathtype=iteration');
+            // this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {
+            //     console.log('user setting saved: ', 'iteration');
+            // });
+            console.log('iteration', next, state, searchTypeHistory);
+            return true;
         }
     }
 }
