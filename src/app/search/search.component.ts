@@ -38,7 +38,7 @@ export class SearchComponent implements OnInit {
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
     dataSource = new MatTreeNestedDataSource<AreaPathNode>();
 
-    private _dataManager?: IExtensionDataManager;
+    // private _dataManager?: IExtensionDataManager;
 
     constructor(private searchService: SearchService, private _Activatedroute: ActivatedRoute, private router: Router) {}
 
@@ -48,23 +48,23 @@ export class SearchComponent implements OnInit {
         await SDK.ready();
         const accessToken = await SDK.getAccessToken();
         const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
-        this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
+        // this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
         this._Activatedroute.queryParams
             .subscribe(async params => {
                 if (!params.pathtype || params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
-                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
-                        console.log('user setting saved: ', 'area');
-                    });
+                    // this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
+                    //     console.log('user setting saved: ', 'area');
+                    // });
                     this.updateTypeahead('areaPaths');
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
-                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {
-                        console.log('user setting saved: ', 'iteration');
-                    });
+                    // this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {
+                    //     console.log('user setting saved: ', 'iteration');
+                    // });
                     this.updateTypeahead('iterations');
                 }
             });
