@@ -48,20 +48,20 @@ export class SearchComponent implements OnInit {
     async ngOnInit() {
         await SDK.ready();
 
+        let adoDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService),
+            dataManager = await adoDataService.getExtensionDataManager(SDK.getExtensionContext().extensionId, SDK.getAccessToken().toString());
+
         this._Activatedroute.queryParams
             .subscribe(async params => {
-                // let adoDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService),
-                //     dataManager = await adoDataService.getExtensionDataManager(SDK.getExtensionContext().extensionId, SDK.getAccessToken().toString());
                 if (!params.pathtype || params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
-                    // dataManager.setValue('adoAreapathsSearchType', 'area', { scopeType: 'User' });
+                    dataManager.setValue('adoAzurePathsSearchType', 'area', { scopeType: 'User' });
                     this.updateTypeahead('areaPaths');
-
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
-                    // dataManager.setValue('adoAreapathsSearchType', 'iteration', { scopeType: 'User' });
+                    dataManager.setValue('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' });
                     this.updateTypeahead('iterations');
                 }
             });
