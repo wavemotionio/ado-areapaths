@@ -23,10 +23,11 @@ export class SearchHistoryGuard implements CanActivate {
         let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
 
         if (!searchTypeHistory || searchTypeHistory === 'iteration') {
-            return this.router.parseUrl('/search?pathtype=iteration');
+            console.log(this.router.parseUrl('/search?pathtype=iteration'));
+            return true;
         } else if (searchTypeHistory === 'area') {
-
-            return this.router.parseUrl('/search?pathtype=area');
+            console.log(this.router.parseUrl('/search?pathtype=area'));
+            return true;
         }
     }
 }
