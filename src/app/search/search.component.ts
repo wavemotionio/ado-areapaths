@@ -11,8 +11,7 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 
 import * as SDK from "azure-devops-extension-sdk";
 import { IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
-import { CommonServiceIds, IExtensionDataService } from "azure-devops-extension-api";
-
+import { CommonServiceIds, IExtensionDataManager, IExtensionDataService } from "azure-devops-extension-api";
 
 import { SearchService } from './search.service';
 import { WhitespaceValidator } from '../shared/whitespace.validator';
@@ -29,17 +28,17 @@ interface AreaPathNode {
 })
 
 export class SearchComponent implements OnInit {
-
     myControl = new FormControl('', [Validators.required, WhitespaceValidator.notEmpty]);
     options: string[];
     pathType: any;
     filteredOptions: Observable<string[]>;
     pathTypeChecked: boolean;
-
     areaPathsAndIterations: any;
     isLoading: boolean;
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
     dataSource = new MatTreeNestedDataSource<AreaPathNode>();
+
+    private _dataManager?: IExtensionDataManager;
 
     constructor(private searchService: SearchService, private _Activatedroute: ActivatedRoute, private router: Router) {}
 
@@ -47,25 +46,25 @@ export class SearchComponent implements OnInit {
 
     async ngOnInit() {
         await SDK.ready();
-
-        let adoDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService),
-            dataManager = await adoDataService.getExtensionDataManager(SDK.getExtensionContext().extensionId, SDK.getAccessToken().toString());
-
-            console.log('dataManager', dataManager);
+        const accessToken = await SDK.getAccessToken();
+        const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
+        this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
         this._Activatedroute.queryParams
             .subscribe(async params => {
                 if (!params.pathtype || params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
-                    let setStorage = dataManager.setValue('adoAzurePathsSearchType', 'area', { scopeType: 'User' });
-                    console.log('area: ', setStorage);
+                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
+                        console.log('user setting saved: ', 'area');
+                    });
                     this.updateTypeahead('areaPaths');
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
-                    let setStorage = dataManager.setValue('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' });
-                    console.log('iteration', setStorage);
+                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {
+                        console.log('user setting saved: ', 'iteration');
+                    });
                     this.updateTypeahead('iterations');
                 }
             });
