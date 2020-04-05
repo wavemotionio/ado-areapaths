@@ -98,6 +98,8 @@ export class SearchComponent implements OnInit {
 
             this.options = this._flatten(workItems, flattenedWorkItems);
             this.dataSource.data = workItems || [];
+        }).catch(err => {
+            this.isLoading = false;
         });
     }
 
