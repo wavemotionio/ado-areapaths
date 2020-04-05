@@ -306,6 +306,8 @@ export class BacklogComponent implements OnInit {
                 }
 
                 this.assignedToSaveEnabled = false;
+
+                this.setState();
             });
 
         this.assignedToControl.valueChanges.subscribe(value => {
@@ -330,16 +332,24 @@ export class BacklogComponent implements OnInit {
 
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
+        this.setState();
+    }
+
+    setState() {
+        let azurePath = this._Activatedroute.snapshot.params['azurepath'],
+            pathType = this._Activatedroute.snapshot.params['pathtype'],
+            assignedTo = this._Activatedroute.snapshot.queryParams['assignedto'];
+
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
             this.backlogTypeChecked = true;
             this.backlogType = 'Stalled';
             this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'stalled', { scopeType: 'User' }).then(() => {});
-            this.setAreaPathData(azurePath, pathType);
+            this.setAreaPathData(azurePath, pathType, assignedTo);
         } else {
             this.backlogTypeChecked = false;
             this.backlogType = 'In Progress';
             this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'inprogress', { scopeType: 'User' }).then(() => {});
-            this.setAreaPathData(azurePath, pathType);
+            this.setAreaPathData(azurePath, pathType, assignedTo);
         }
     }
 
@@ -381,7 +391,7 @@ export class BacklogComponent implements OnInit {
 
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
-    setAreaPathData(azurePath, pathType) {
+    setAreaPathData(azurePath, pathType, assignedto) {
         let systemPathType = 'AreaPath',
             customQuery = null,
             isStalledOnly = _.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled';
@@ -390,10 +400,12 @@ export class BacklogComponent implements OnInit {
             systemPathType = 'IterationPath';
         }
 
+        let assignedToQuery = assignedto ? `AND [System.AssignedTo] = @Me ` : '';
+
         if (isStalledOnly) {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' ${assignedToQuery}AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         } else {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' AND [System.State] NOT CONTAINS 'Closed' AND [System.State] NOT CONTAINS 'Resolved' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' ${assignedToQuery}AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' AND [System.State] NOT CONTAINS 'Closed' AND [System.State] NOT CONTAINS 'Resolved' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         }
 
         this.database.setCustomWIQLQuery(customQuery, isStalledOnly).catch(err => {
