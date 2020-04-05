@@ -41,6 +41,7 @@ https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
 - https://github.com/microsoft/azure-devops-extension-sample
 
 ## To Dos
+1. Hide filter on backlog viewer when no data is found.
 1. Update devDeps
 1. Add tests
 ```

@@ -11,6 +11,7 @@ import { CommonServiceIds, getClient, IProjectPageService, IExtensionDataService
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatWorkItems } from './formatWorkItems';
+import { FormControl, Validators } from '@angular/forms';
 
 export class DynamicFlatNode {
   constructor(public item: any, public level: number = 1, public expandable: boolean = false, public isLoading: boolean = false, public children: any = []) {}
@@ -247,6 +248,8 @@ export class BacklogComponent implements OnInit {
     message:string;
     backlogTypeChecked: boolean;
     backlogType: string;
+    assignedToControl = new FormControl('', [Validators.required]);
+    assignedToSaveEnabled: boolean = false;
 
     private _dataManager?: IExtensionDataManager;
 
@@ -293,6 +296,26 @@ export class BacklogComponent implements OnInit {
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
         this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
+        this._Activatedroute.queryParams
+            .subscribe(async params => {
+                let queryParam =_.clone(params.assignedto) || null,
+                    userInput = this.assignedToControl.value.trim() || null;
+
+                if (queryParam !== userInput) {
+                    this.assignedToControl.setValue(decodeURIComponent(queryParam));
+                }
+
+                this.assignedToSaveEnabled = false;
+            });
+
+        this.assignedToControl.valueChanges.subscribe(value => {
+            if (this._Activatedroute.snapshot.queryParams['assignedto'] === value) {
+                this.assignedToSaveEnabled = false;
+            } else {
+                this.assignedToSaveEnabled = true;
+            }
+        });
+
         await SDK.ready();
 
         const accessToken = await SDK.getAccessToken();
@@ -322,9 +345,9 @@ export class BacklogComponent implements OnInit {
 
     backlogTypeChanged(event?) {
         if (!event.checked) {
-            this.router.navigate(["../"], { relativeTo: this._Activatedroute });
+            this.router.navigate(["../"], { relativeTo: this._Activatedroute, queryParamsHandling: 'merge' });
         } else {
-            this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute });
+            this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute, queryParamsHandling: 'merge' });
         }
     }
 
@@ -377,6 +400,23 @@ export class BacklogComponent implements OnInit {
             this.dataSource.data = [];
             this.isLoading = false;
         });
+    }
+
+    searchByAssignedTo() {
+        this.assignedToControl.setValue(this.assignedToControl.value.trim());
+
+        this.router.navigate(
+          [], 
+          {
+            relativeTo: this._Activatedroute,
+            queryParams: { assignedto: encodeURIComponent(this.assignedToControl.value) || null },
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+          });
+    }
+
+    clearAssignedToValue() {
+        this.assignedToControl.setValue('');
     }
 
     filterChanged(filterText: string) {

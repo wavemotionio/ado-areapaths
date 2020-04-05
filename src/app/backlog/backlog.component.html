@@ -1,12 +1,12 @@
-<div fxflex fxLayout="column" fxLayout.gt-xs="row">
+<div fxflex fxLayout="column" fxLayout.gt-sm="row">
 
-    <h2 fxFlex fxFlexOrder="2" fxFlexOrder.gt-xs="1" >
-        Backlog Viewer
+    <h2 fxFlex fxFlexOrder="2" fxFlexOrder.gt-sm="1" >
+        Active Backlog Viewer
         <br>
-        <small>{{message}}</small>
+        <small style="overflow-wrap: break-word;">{{message}}</small>
     </h2>
 
-    <div fxLayoutAlign="end center" fxFlex fxLayout="row" fxFlexOrder="1" fxFlexOrder.gt-xs="2">
+    <div fxLayoutAlign="end center" fxFlex fxLayout="row" fxFlexOrder="1" fxFlexOrder.gt-sm="2">
         <mat-slide-toggle
             class="toggle-path-type"
             color="warn"
@@ -32,13 +32,42 @@
         <mat-icon>arrow_back</mat-icon> Go back to search
     </button>
 </div>
-<form class="example-form" *ngIf="!isLoading">
-    <mat-form-field class="example-full-width">
-        <mat-icon matPrefix>filter_list</mat-icon>
-        <input matInput placeholder="Filter visible by keyword or ID" (input)="filterChanged($event.target.value)">
-        <mat-hint align="start">Once filtered, you must refresh the azure path to clear this filter.</mat-hint>
-    </mat-form-field>
-</form>
+
+<div fxLayoutAlign="space-between center" *ngIf="!isLoading" fxflex fxLayout="column" fxLayout.gt-sm="row">
+    <form>
+        <mat-form-field>
+            <mat-icon matPrefix>assignment_ind</mat-icon>
+            <input type="text"
+            placeholder="Search by 'Assigned To'"
+            aria-label="Search by assigned to"
+            matInput
+            [formControl]="assignedToControl"
+            [matAutocomplete]="auto">
+            <button mat-button type="button" *ngIf="assignedToControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearAssignedToValue()" tabindex="-1">
+                <mat-icon>close</mat-icon>
+            </button>
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of userOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+            <!-- <mat-error *ngIf="assignedToControl.invalid">{{getErrorMessage()}}</mat-error> -->
+        </mat-form-field>
+        <button mat-icon-button type="submit" color="primary" matTooltip="Set assigned to" aria-label="Set assigned to" (click)="searchByAssignedTo()" [disabled]="!assignedToSaveEnabled">
+            <mat-icon>
+              save
+            </mat-icon>
+        </button>
+    </form>
+    <form>
+        <mat-form-field>
+            <mat-icon matPrefix>filter_list</mat-icon>
+            <input matInput placeholder="Filter visible by keyword or ID" (input)="filterChanged($event.target.value)" aria-label="Filter by keyword or ID">
+            <mat-hint align="start">Once filtered, you must refresh the azure path to clear this filter.</mat-hint>
+        </mat-form-field>
+    </form>
+</div>
+
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="isLoading">
     <mat-spinner mode="indeterminate"></mat-spinner>
 </div>

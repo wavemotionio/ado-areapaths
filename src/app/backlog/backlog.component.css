@@ -1,7 +1,6 @@
-.example-form {
-  min-width: 300px;
+.mat-form-field {
+  min-width: 400px;
   max-width: 800px;
-  width: 100%;
 }
 
 .example-full-width {
