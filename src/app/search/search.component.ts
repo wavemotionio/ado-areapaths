@@ -52,30 +52,27 @@ export class SearchComponent implements OnInit {
 
         this._Activatedroute.queryParams
             .subscribe(async params => {
-                let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
-
-                if (searchTypeHistory && params.pathtype !== searchTypeHistory) {
-                    if (searchTypeHistory === 'area') {
-                        this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
-                    } else {
-                        this.router.navigate(['/search'], { queryParams: { pathtype: 'iteration' } });
-                    }
-                }
-
-                if (!params.pathtype || params.pathtype === 'area') {
+                if (params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
-                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {
-                        console.log('user setting saved: ', 'area');
-                    });
+                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {});
                     this.updateTypeahead('areaPaths');
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
-                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {
-                        console.log('user setting saved: ', 'iteration');
-                    });
+                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {});
                     this.updateTypeahead('iterations');
+                } else {
+                    let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
+
+                    if (searchTypeHistory) {
+                        this.router.navigate(['/search'], { queryParams: { pathtype: searchTypeHistory } });
+                    } else {
+                        this.pathType = 'Iteration';
+                        this.pathTypeChecked = true;
+                        this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {});
+                        this.updateTypeahead('iterations');
+                    }
                 }
             });
 
