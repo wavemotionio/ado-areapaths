@@ -41,8 +41,9 @@ https://marketplace.visualstudio.com/items?itemName=wavemotionio.ado-areapaths
 - https://github.com/microsoft/azure-devops-extension-sample
 
 # Development Notes
+1. update error handling
+
 
 ## To Dos
-1. Save user settings
 1. Update devDeps
 ```

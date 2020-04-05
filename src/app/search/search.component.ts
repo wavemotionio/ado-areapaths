@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { FormControl, Validators } from '@angular/forms';
@@ -11,8 +11,7 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 
 import * as SDK from "azure-devops-extension-sdk";
 import { IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
-import { CommonServiceIds, IExtensionDataService } from "azure-devops-extension-api";
-
+import { CommonServiceIds, IExtensionDataManager, IExtensionDataService } from "azure-devops-extension-api";
 
 import { SearchService } from './search.service';
 import { WhitespaceValidator } from '../shared/whitespace.validator';
@@ -29,17 +28,17 @@ interface AreaPathNode {
 })
 
 export class SearchComponent implements OnInit {
-
     myControl = new FormControl('', [Validators.required, WhitespaceValidator.notEmpty]);
     options: string[];
     pathType: any;
     filteredOptions: Observable<string[]>;
     pathTypeChecked: boolean;
-
     areaPathsAndIterations: any;
     isLoading: boolean;
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
     dataSource = new MatTreeNestedDataSource<AreaPathNode>();
+
+    private _dataManager?: IExtensionDataManager;
 
     constructor(private searchService: SearchService, private _Activatedroute: ActivatedRoute, private router: Router) {}
 
@@ -47,24 +46,41 @@ export class SearchComponent implements OnInit {
 
     async ngOnInit() {
         await SDK.ready();
+        const accessToken = await SDK.getAccessToken();
+        const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
+        this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
         this._Activatedroute.queryParams
             .subscribe(async params => {
-                // let adoDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService),
-                //     dataManager = await adoDataService.getExtensionDataManager(SDK.getExtensionContext().extensionId, SDK.getAccessToken().toString());
-                if (!params.pathtype || params.pathtype === 'area') {
+                if (params.pathtype === 'area') {
                     this.pathType = 'Area';
                     this.pathTypeChecked = false;
-                    // dataManager.setValue('adoAreapathsSearchType', 'area', { scopeType: 'User' });
+                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'area', { scopeType: 'User' }).then(() => {});
                     this.updateTypeahead('areaPaths');
-
                 } else if (params.pathtype === 'iteration') {
                     this.pathType = 'Iteration';
                     this.pathTypeChecked = true;
-                    // dataManager.setValue('adoAreapathsSearchType', 'iteration', { scopeType: 'User' });
+                    this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {});
                     this.updateTypeahead('iterations');
+                } else {
+                    let searchTypeHistory = await this._dataManager.getValue('adoAzurePathsSearchType', { scopeType: 'User' });
+
+                    if (searchTypeHistory) {
+                        this.router.navigate(['/search'], { queryParams: { pathtype: searchTypeHistory } });
+                    } else {
+                        this.pathType = 'Iteration';
+                        this.pathTypeChecked = true;
+                        this._dataManager!.setValue<string>('adoAzurePathsSearchType', 'iteration', { scopeType: 'User' }).then(() => {});
+                        this.updateTypeahead('iterations');
+                    }
                 }
             });
+
+        let searchValueHistory = await this._dataManager.getValue('adoAzurePathsSearchValue', { scopeType: 'User' });
+
+        if (searchValueHistory) {
+            this.myControl.setValue(searchValueHistory);
+        }
 
         this.filteredOptions = this.myControl.valueChanges
           .pipe(
@@ -85,8 +101,17 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    pathTypeChanged(event?) {
+    clearSearchValue() {
         this.myControl.setValue('');
+        this.setSearchValueToHistory();
+    }
+
+    setSearchValueToHistory() {
+        this._dataManager!.setValue<string>('adoAzurePathsSearchValue', this.myControl.value, { scopeType: 'User' }).then(() => {});
+    }
+
+    pathTypeChanged(event?) {
+        this.clearSearchValue();
 
         if (!event.checked) {
             this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
@@ -95,10 +120,18 @@ export class SearchComponent implements OnInit {
         }
     }
 
-    viewBacklog(selectedPath, pathTypeChecked) {
-        let goToPathType = pathTypeChecked ? 'iteration' : 'area';
+    async viewBacklog(selectedPath, pathTypeChecked) {
+        const goToPathType = pathTypeChecked ? 'iteration' : 'area',
+            backlogTypeHistory = await this._dataManager.getValue('adoAzurePathsBacklogType', { scopeType: 'User' });
 
-        this.router.navigate([`/backlog/${goToPathType}/${selectedPath}`]);
+        let stalled = '';
+
+        if (backlogTypeHistory === 'stalled') {
+            stalled = '/stalled';
+        }
+
+        this.setSearchValueToHistory();
+        this.router.navigate([`/backlog/${goToPathType}/${selectedPath}${stalled}`]);
     }
 
     private _filter(value: string): string[] {
