@@ -348,7 +348,7 @@ export class BacklogComponent implements OnInit {
     }
 
     isLoading: boolean = false;
-
+    errorFound: boolean = false;
     treeControl: FlatTreeControl<DynamicFlatNode>;
 
     dataSource: DynamicDataSource;
@@ -375,7 +375,8 @@ export class BacklogComponent implements OnInit {
         }
 
         this.database.setCustomWIQLQuery(customQuery, isStalledOnly).catch(err => {
-            console.log('error found', err);
+            this.isLoading = false;
+            this.errorFound = true;
         });
     }
 
