@@ -251,6 +251,7 @@ export class BacklogComponent implements OnInit {
     backlogType: string;
     assignedToControl = new FormControl('');
     assignedToSaveEnabled: boolean = false;
+    searchPathType: string;
 
     private _dataManager?: IExtensionDataManager;
 
@@ -340,6 +341,8 @@ export class BacklogComponent implements OnInit {
         let azurePath = this._Activatedroute.snapshot.params['azurepath'],
             pathType = this._Activatedroute.snapshot.params['pathtype'],
             assignedTo = this._Activatedroute.snapshot.queryParams['assignedto'];
+
+        this.searchPathType = pathType;
 
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
             this.backlogTypeChecked = true;
