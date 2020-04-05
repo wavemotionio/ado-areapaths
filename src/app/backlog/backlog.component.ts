@@ -374,6 +374,7 @@ export class BacklogComponent implements OnInit {
         }
 
         this.database.setCustomWIQLQuery(customQuery, isStalledOnly).catch(err => {
+            this.dataSource.data = [];
             this.isLoading = false;
         });
     }
