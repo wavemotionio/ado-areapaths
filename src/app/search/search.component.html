@@ -18,8 +18,11 @@
 	<mat-spinner mode="indeterminate"></mat-spinner>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
+<div fxLayout="column" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
 	<h4>No Data Found</h4>
+	<h3 style="color: #f44336;" *ngIf="errorFound">
+		Azure Error: Use Ctrl-F5
+	</h3>
 </div>
 
 <div *ngIf="!isLoading && dataSource.data.length > 0">

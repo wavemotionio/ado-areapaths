@@ -37,6 +37,7 @@ export class SearchComponent implements OnInit {
     isLoading: boolean;
     treeControl = new NestedTreeControl<AreaPathNode>(node => node.children);
     dataSource = new MatTreeNestedDataSource<AreaPathNode>();
+    errorFound: boolean = false;
 
     private _dataManager?: IExtensionDataManager;
 
@@ -101,6 +102,7 @@ export class SearchComponent implements OnInit {
         }).catch(err => {
             this.dataSource.data = [];
             this.isLoading = false;
+            this.errorFound = true;
         });
     }
 
