@@ -76,6 +76,12 @@ export class SearchComponent implements OnInit {
                 }
             });
 
+        let searchValueHistory = await this._dataManager.getValue('adoAzurePathsSearchValue', { scopeType: 'User' });
+
+        if (searchValueHistory) {
+            this.myControl.setValue(searchValueHistory);
+        }
+
         this.filteredOptions = this.myControl.valueChanges
           .pipe(
             startWith(''),
@@ -107,6 +113,8 @@ export class SearchComponent implements OnInit {
 
     viewBacklog(selectedPath, pathTypeChecked) {
         let goToPathType = pathTypeChecked ? 'iteration' : 'area';
+
+        this._dataManager!.setValue<string>('adoAzurePathsSearchValue', this.myControl.value, { scopeType: 'User' }).then(() => {});
 
         this.router.navigate([`/backlog/${goToPathType}/${selectedPath}`]);
     }
