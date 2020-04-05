@@ -2,7 +2,7 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {CollectionViewer, SelectionChange} from '@angular/cdk/collections';
 import {BehaviorSubject, Observable, merge } from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import _ from 'lodash';
 import { RootDataSourceService } from "../shared/services/rootDataSource.service";
 import { ActivatedRoute, Router } from '@angular/router';
@@ -252,6 +252,8 @@ export class BacklogComponent implements OnInit {
     assignedToControl = new FormControl('');
     assignedToSaveEnabled: boolean = false;
     searchPathType: string;
+    userList: Observable<string[]>;
+    optionsJSON: string[];
 
     private _dataManager?: IExtensionDataManager;
 
@@ -295,6 +297,8 @@ export class BacklogComponent implements OnInit {
         let azurePath = this._Activatedroute.snapshot.params['azurepath'],
             pathType = this._Activatedroute.snapshot.params['pathtype'];
 
+        this.optionsJSON = ['1', '2', '3', '4', '5']; // populate with JSON
+
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
         this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
@@ -335,6 +339,18 @@ export class BacklogComponent implements OnInit {
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
         this.setState();
+
+        this.userList = this.assignedToControl.valueChanges
+          .pipe(
+            startWith(''),
+            map(value => this._filter(value))
+          );
+    }
+
+    private _filter(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        return this.optionsJSON.filter(option => option.toLowerCase().includes(filterValue));
     }
 
     setState() {

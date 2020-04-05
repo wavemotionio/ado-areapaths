@@ -34,7 +34,7 @@
 </div>
 
 <div fxLayoutAlign="space-between center" *ngIf="!isLoading && dataSource.data.length > 0" fxflex fxLayout="column" fxLayout.gt-sm="row">
-    <!-- <form>
+    <form>
         <mat-form-field>
             <mat-icon matPrefix>assignment_ind</mat-icon>
             <input type="text"
@@ -47,7 +47,7 @@
                 <mat-icon>close</mat-icon>
             </button>
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let option of userOptions | async" [value]="option">
+                <mat-option *ngFor="let option of userList | async" [value]="option">
                     {{option}}
                 </mat-option>
             </mat-autocomplete>
@@ -57,7 +57,7 @@
               save
             </mat-icon>
         </button>
-    </form> -->
+    </form>
     <form>
         <mat-form-field>
             <mat-icon matPrefix>filter_list</mat-icon>
