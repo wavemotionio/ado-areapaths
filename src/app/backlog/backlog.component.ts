@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { RootDataSourceService } from "../shared/services/rootDataSource.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import * as SDK from "azure-devops-extension-sdk";
-import { CommonServiceIds, getClient, IProjectPageService } from "azure-devops-extension-api";
+import { CommonServiceIds, getClient, IProjectPageService, IExtensionDataService, IExtensionDataManager } from "azure-devops-extension-api";
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatWorkItems } from './formatWorkItems';
@@ -248,6 +248,8 @@ export class BacklogComponent implements OnInit {
     backlogTypeChecked: boolean;
     backlogType: string;
 
+    private _dataManager?: IExtensionDataManager;
+
     constructor(private database: DynamicDatabase, private rootDataSourceService: RootDataSourceService, public _Activatedroute: ActivatedRoute, private router: Router) {
         this.workItemStatesList['New'] = 'fiber_new';
         this.workItemStatesList['Proposed'] = 'fiber_new';
@@ -291,15 +293,11 @@ export class BacklogComponent implements OnInit {
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
         this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
-        if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
-            this.backlogTypeChecked = true;
-            this.backlogType = 'Stalled';
-        } else {
-            this.backlogTypeChecked = false;
-            this.backlogType = 'In Progress';
-        }
-
         await SDK.ready();
+
+        const accessToken = await SDK.getAccessToken();
+        const extDataService = await SDK.getService<IExtensionDataService>(CommonServiceIds.ExtensionDataService);
+        this._dataManager = await extDataService.getExtensionDataManager(SDK.getExtensionContext().id, accessToken);
 
         this.database.currentData.subscribe(data => {
             this.dataSource.data = _.reject(data, (flattenedNode) => {
@@ -310,9 +308,21 @@ export class BacklogComponent implements OnInit {
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
+            this.backlogTypeChecked = true;
+            this.backlogType = 'Stalled';
+            this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'stalled', { scopeType: 'User' }).then(() => {});
             this.setAreaPathData(azurePath, pathType);
         } else {
-            this.setAreaPathData(azurePath, pathType);
+            let backlogTypeHistory = await this._dataManager.getValue('adoAzurePathsBacklogType', { scopeType: 'User' });
+
+            if (backlogTypeHistory === 'stalled') {
+                this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute });
+            } else {
+                this.backlogTypeChecked = false;
+                this.backlogType = 'In Progress';
+                this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'inprogress', { scopeType: 'User' }).then(() => {});
+                this.setAreaPathData(azurePath, pathType);
+            }
         }
     }
 

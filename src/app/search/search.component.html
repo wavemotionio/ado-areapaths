@@ -32,7 +32,7 @@
 			matInput
 			[formControl]="myControl"
 			[matAutocomplete]="auto">
-			<button mat-button *ngIf="myControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="myControl.value=''">
+			<button mat-button *ngIf="myControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearchValue()">
 		    	<mat-icon>close</mat-icon>
 		    </button>
 			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
