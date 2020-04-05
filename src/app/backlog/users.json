@@ -1,0 +1,146 @@
+{
+  "count": 5,
+  "value": [
+    {
+      "subjectKind": "user",
+      "domain": "Boards",
+      "principalName": "155bbbd6-7873-4353-a410-88774f26a40c",
+      "mailAddress": "",
+      "origin": "vsts",
+      "originId": "cd1689fb-a0f4-4a07-b5f9-4a44e71d66ba",
+      "displayName": "Azure Boards",
+      "_links": {
+        "self": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM"
+        },
+        "memberships": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Memberships/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM"
+        },
+        "membershipState": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/MembershipStates/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM"
+        },
+        "storageKey": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/StorageKeys/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM"
+        },
+        "avatar": {
+          "href": "https://dev.azure.com/wavemotionio/_apis/GraphProfile/MemberAvatars/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM"
+        }
+      },
+      "url": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM",
+      "descriptor": "svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJvYXJkczoxNTViYmJkNi03ODczLTQzNTMtYTQxMC04ODc3NGYyNmE0MGM"
+    },
+    {
+      "subjectKind": "user",
+      "domain": "Build",
+      "principalName": "ad312882-7b34-4db1-bdda-05019884e938",
+      "mailAddress": "",
+      "origin": "vsts",
+      "originId": "f7093e6d-49eb-4854-8aeb-5b0bf854d3e2",
+      "displayName": "ado-tools Build Service (wavemotionio)",
+      "_links": {
+        "self": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA"
+        },
+        "memberships": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Memberships/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA"
+        },
+        "membershipState": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/MembershipStates/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA"
+        },
+        "storageKey": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/StorageKeys/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA"
+        },
+        "avatar": {
+          "href": "https://dev.azure.com/wavemotionio/_apis/GraphProfile/MemberAvatars/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA"
+        }
+      },
+      "url": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA",
+      "descriptor": "svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOmFkMzEyODgyLTdiMzQtNGRiMS1iZGRhLTA1MDE5ODg0ZTkzOA"
+    },
+    {
+      "subjectKind": "user",
+      "domain": "Build",
+      "principalName": "155bbbd6-7873-4353-a410-88774f26a40c",
+      "mailAddress": "",
+      "origin": "vsts",
+      "originId": "f7a0e5ff-b2dc-4ec3-82f3-c42f3c801bdd",
+      "displayName": "Project Collection Build Service (wavemotionio)",
+      "_links": {
+        "self": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw"
+        },
+        "memberships": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Memberships/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw"
+        },
+        "membershipState": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/MembershipStates/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw"
+        },
+        "storageKey": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/StorageKeys/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw"
+        },
+        "avatar": {
+          "href": "https://dev.azure.com/wavemotionio/_apis/GraphProfile/MemberAvatars/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw"
+        }
+      },
+      "url": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw",
+      "descriptor": "svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjE1NWJiYmQ2LTc4NzMtNDM1My1hNDEwLTg4Nzc0ZjI2YTQwYw"
+    },
+    {
+      "subjectKind": "user",
+      "domain": "Build",
+      "principalName": "4ed28619-a7f5-45a8-9aea-bcbc77239803",
+      "mailAddress": "",
+      "origin": "vsts",
+      "originId": "090ac7cf-805a-42f1-b523-dde9320d1fde",
+      "displayName": "test project type Build Service (wavemotionio)",
+      "_links": {
+        "self": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw"
+        },
+        "memberships": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Memberships/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw"
+        },
+        "membershipState": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/MembershipStates/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw"
+        },
+        "storageKey": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/StorageKeys/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw"
+        },
+        "avatar": {
+          "href": "https://dev.azure.com/wavemotionio/_apis/GraphProfile/MemberAvatars/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw"
+        }
+      },
+      "url": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw",
+      "descriptor": "svc.NzdhODNmZGMtOGYzMS00OGY1LWJiMDctZDUyY2EwMTgwNTNiOkJ1aWxkOjRlZDI4NjE5LWE3ZjUtNDVhOC05YWVhLWJjYmM3NzIzOTgwMw"
+    },
+    {
+      "subjectKind": "user",
+      "directoryAlias": "wavemotionio",
+      "domain": "Windows Live ID",
+      "principalName": "petepalles@gmail.com",
+      "mailAddress": "petepalles@gmail.com",
+      "origin": "ghb",
+      "originId": "34727174",
+      "displayName": "wavemotionio",
+      "_links": {
+        "self": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz"
+        },
+        "memberships": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Memberships/msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz"
+        },
+        "membershipState": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/MembershipStates/msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz"
+        },
+        "storageKey": {
+          "href": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/StorageKeys/msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz"
+        },
+        "avatar": {
+          "href": "https://dev.azure.com/wavemotionio/_apis/GraphProfile/MemberAvatars/msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz"
+        }
+      },
+      "url": "https://vssps.dev.azure.com/wavemotionio/_apis/Graph/Users/msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz",
+      "descriptor": "msa.MmZmNGYyOGEtMWM1Yi03YjExLWI4OTktZWY3OGJiNzNlYTAz"
+    }
+  ]
+}
