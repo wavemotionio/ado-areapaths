@@ -25,7 +25,6 @@ export class SearchService {
                     name: childItem.name,
                     path: childItem.path.replace('\\Area\\', '\\').replace('\\Iteration\\', '\\').replace(`\\${project.name}`, project.name),
                     children: childItem.hasChildren ? mapChildren(childItem.children) : null
-
                 }
             })),
             removedCruft = _.map(fullAreaPathObjects, (areaPathObject) => (
