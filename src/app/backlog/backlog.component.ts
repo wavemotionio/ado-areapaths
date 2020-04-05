@@ -11,6 +11,7 @@ import { CommonServiceIds, getClient, IProjectPageService, IExtensionDataService
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatWorkItems } from './formatWorkItems';
+import { FormControl } from '@angular/forms';
 
 export class DynamicFlatNode {
   constructor(public item: any, public level: number = 1, public expandable: boolean = false, public isLoading: boolean = false, public children: any = []) {}
@@ -49,7 +50,8 @@ export class DynamicDatabase {
 
                     let wiDetails = await client.getWorkItem(parseInt(workItemsWithChildren[i]['relations'][x]), project.name, [
                         'System.WorkItemType',
-                        'System.State'
+                        'System.State',
+                        'System.AssignedTo'
                     ], undefined, 0);
 
                     populatedRelations.push(wiDetails);
@@ -109,7 +111,7 @@ export class DynamicDatabase {
 
                 workItemsList = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
                     _.find(parentWorkItem.relations, (childItem: any) =>
-                        childItem.fields['System.WorkItemType'] === 'Task' &&
+                        childItem.fields['System.WorkItemType'] === 'Task' && !_.isEmpty(childItem.fields['System.AssignedTo']) &&
                             (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress' || childItem.fields['System.State'] === 'Active')
                     )
                 );
@@ -247,6 +249,9 @@ export class BacklogComponent implements OnInit {
     message:string;
     backlogTypeChecked: boolean;
     backlogType: string;
+    assignedToControl = new FormControl('');
+    assignedToSaveEnabled: boolean = false;
+    searchPathType: string;
 
     private _dataManager?: IExtensionDataManager;
 
@@ -293,6 +298,28 @@ export class BacklogComponent implements OnInit {
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
         this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
+        this._Activatedroute.queryParams
+            .subscribe(async params => {
+                let queryParam =_.clone(params.assignedto) || null,
+                    userInput = this.assignedToControl.value.trim() || null;
+
+                if (queryParam !== userInput) {
+                    this.assignedToControl.setValue(decodeURIComponent(queryParam));
+                }
+
+                this.assignedToSaveEnabled = false;
+
+                this.setState();
+            });
+
+        this.assignedToControl.valueChanges.subscribe(value => {
+            if (this._Activatedroute.snapshot.queryParams['assignedto'] === value) {
+                this.assignedToSaveEnabled = false;
+            } else {
+                this.assignedToSaveEnabled = true;
+            }
+        });
+
         await SDK.ready();
 
         const accessToken = await SDK.getAccessToken();
@@ -307,24 +334,34 @@ export class BacklogComponent implements OnInit {
 
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
+        this.setState();
+    }
+
+    setState() {
+        let azurePath = this._Activatedroute.snapshot.params['azurepath'],
+            pathType = this._Activatedroute.snapshot.params['pathtype'],
+            assignedTo = this._Activatedroute.snapshot.queryParams['assignedto'];
+
+        this.searchPathType = pathType;
+
         if (_.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled') {
             this.backlogTypeChecked = true;
-            this.backlogType = 'Stalled';
+            this.backlogType = 'Active and No Tasks Assigned';
             this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'stalled', { scopeType: 'User' }).then(() => {});
-            this.setAreaPathData(azurePath, pathType);
+            this.setAreaPathData(azurePath, pathType, assignedTo);
         } else {
             this.backlogTypeChecked = false;
-            this.backlogType = 'In Progress';
+            this.backlogType = 'New and Active';
             this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'inprogress', { scopeType: 'User' }).then(() => {});
-            this.setAreaPathData(azurePath, pathType);
+            this.setAreaPathData(azurePath, pathType, assignedTo);
         }
     }
 
     backlogTypeChanged(event?) {
         if (!event.checked) {
-            this.router.navigate(["../"], { relativeTo: this._Activatedroute });
+            this.router.navigate(["../"], { relativeTo: this._Activatedroute, queryParamsHandling: 'merge' });
         } else {
-            this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute });
+            this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute, queryParamsHandling: 'merge' });
         }
     }
 
@@ -358,7 +395,7 @@ export class BacklogComponent implements OnInit {
 
     hasChild = (_: number, _nodeData: DynamicFlatNode) => { return _nodeData.expandable; };
 
-    setAreaPathData(azurePath, pathType) {
+    setAreaPathData(azurePath, pathType, assignedto) {
         let systemPathType = 'AreaPath',
             customQuery = null,
             isStalledOnly = _.get(this._Activatedroute.snapshot.url[2], 'path') === 'stalled';
@@ -367,16 +404,35 @@ export class BacklogComponent implements OnInit {
             systemPathType = 'IterationPath';
         }
 
+        let assignedToQuery = assignedto ? `AND [System.AssignedTo] = @Me ` : ''; // add exception for 'unassigned'
+
         if (isStalledOnly) {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' ${assignedToQuery}AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         } else {
-            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' AND [System.State] NOT CONTAINS 'Closed' AND [System.State] NOT CONTAINS 'Resolved' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
+            customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' ${assignedToQuery}AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' AND [System.State] NOT CONTAINS 'Closed' AND [System.State] NOT CONTAINS 'Resolved' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         }
 
         this.database.setCustomWIQLQuery(customQuery, isStalledOnly).catch(err => {
             this.dataSource.data = [];
             this.isLoading = false;
         });
+    }
+
+    searchByAssignedTo() {
+        this.assignedToControl.setValue(this.assignedToControl.value.trim());
+
+        this.router.navigate(
+          [], 
+          {
+            relativeTo: this._Activatedroute,
+            queryParams: { assignedto: encodeURIComponent(this.assignedToControl.value) || null },
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+          });
+    }
+
+    clearAssignedToValue() {
+        this.assignedToControl.setValue('');
     }
 
     filterChanged(filterText: string) {
