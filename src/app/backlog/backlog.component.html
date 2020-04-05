@@ -67,7 +67,7 @@
                     <div class="work-item-icons-group">
                         <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
                         <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state] || 'assignment'}}</mat-icon>&nbsp;&nbsp;
-                        <button mat-icon-button color="primary" matTooltip="open work item">
+                        <button mat-icon-button matTooltip="open work item">
                             <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">open_in_browser</mat-icon>
                         </button>
                     </div>
@@ -100,7 +100,7 @@
                     <div class="work-item-icons-group">
                         <mat-icon class="inactive-icon" *ngIf="node.item.commentCount > 0" matBadge="{{node.item.commentCount}}" matBadgeColor="accent" matTooltip="{{node.item.commentCount}} comment(s)">chat</mat-icon>&nbsp;&nbsp;&nbsp;
                         <mat-icon class="inactive-icon" matTooltip="{{node.item.state}}">{{workItemStatesList[node.item.state] || 'assignment'}}</mat-icon>&nbsp;&nbsp;
-                        <button mat-icon-button color="primary" matTooltip="open work item">
+                        <button mat-icon-button matTooltip="open work item">
                             <mat-icon aria-label="open" (click)="onNavigate(node.item.id)" class="open-in-browser">open_in_browser</mat-icon>
                         </button>
                     </div>
