@@ -21,7 +21,7 @@
             <mat-icon>cloud_download</mat-icon> export
         </button>
 
-        <button mat-button color="primary" matTooltip="refresh area" aria-label="refresh" (click)="setAreaPathData(_Activatedroute.snapshot.params['azurepath'], _Activatedroute.snapshot.params['pathtype'])" aria-label="refresh">
+        <button mat-button color="primary" matTooltip="refresh area" aria-label="refresh" (click)="setAreaPathData(_Activatedroute.snapshot.params['azurepath'], _Activatedroute.snapshot.params['pathtype'], _Activatedroute.snapshot.queryParams['assignedto'])" aria-label="refresh">
             <mat-icon>refresh</mat-icon> refresh
         </button>
     </div>
@@ -33,7 +33,7 @@
     </button>
 </div>
 
-<div fxLayoutAlign="space-between center" *ngIf="!isLoading" fxflex fxLayout="column" fxLayout.gt-sm="row">
+<div fxLayoutAlign="space-between center" *ngIf="!isLoading && dataSource.data.length > 0" fxflex fxLayout="column" fxLayout.gt-sm="row">
     <form>
         <mat-form-field>
             <mat-icon matPrefix>assignment_ind</mat-icon>
