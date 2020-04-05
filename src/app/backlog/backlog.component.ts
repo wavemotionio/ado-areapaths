@@ -50,7 +50,8 @@ export class DynamicDatabase {
 
                     let wiDetails = await client.getWorkItem(parseInt(workItemsWithChildren[i]['relations'][x]), project.name, [
                         'System.WorkItemType',
-                        'System.State'
+                        'System.State',
+                        'System.AssignedTo'
                     ], undefined, 0);
 
                     populatedRelations.push(wiDetails);
@@ -110,7 +111,7 @@ export class DynamicDatabase {
 
                 workItemsList = _.reject(await this.hydrateChildren(workItemsWithChildren, client, project), (parentWorkItem: any) =>
                     _.find(parentWorkItem.relations, (childItem: any) =>
-                        childItem.fields['System.WorkItemType'] === 'Task' && childItem.fields['System.AssignedTo'] &&
+                        childItem.fields['System.WorkItemType'] === 'Task' && !_.isEmpty(childItem.fields['System.AssignedTo']) &&
                             (childItem.fields['System.State'] === 'To Do' || childItem.fields['System.State'] === 'In Progress' || childItem.fields['System.State'] === 'Active')
                     )
                 );
@@ -400,7 +401,7 @@ export class BacklogComponent implements OnInit {
             systemPathType = 'IterationPath';
         }
 
-        let assignedToQuery = assignedto ? `AND [System.AssignedTo] = @Me ` : '';
+        let assignedToQuery = assignedto ? `AND [System.AssignedTo] = @Me ` : ''; // add exception for 'unassigned'
 
         if (isStalledOnly) {
             customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' ${assignedToQuery}AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
