@@ -103,6 +103,7 @@ export class SearchComponent implements OnInit {
 
     pathTypeChanged(event?) {
         this.myControl.setValue('');
+        this._dataManager!.setValue<string>('adoAzurePathsSearchValue', this.myControl.value, { scopeType: 'User' }).then(() => {});
 
         if (!event.checked) {
             this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
