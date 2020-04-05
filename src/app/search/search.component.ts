@@ -101,9 +101,17 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    pathTypeChanged(event?) {
+    clearSearchValue() {
         this.myControl.setValue('');
+        this.setSearchValueToHistory();
+    }
+
+    setSearchValueToHistory() {
         this._dataManager!.setValue<string>('adoAzurePathsSearchValue', this.myControl.value, { scopeType: 'User' }).then(() => {});
+    }
+
+    pathTypeChanged(event?) {
+        this.clearSearchValue();
 
         if (!event.checked) {
             this.router.navigate(['/search'], { queryParams: { pathtype: 'area' } });
@@ -115,7 +123,7 @@ export class SearchComponent implements OnInit {
     viewBacklog(selectedPath, pathTypeChecked) {
         let goToPathType = pathTypeChecked ? 'iteration' : 'area';
 
-        this._dataManager!.setValue<string>('adoAzurePathsSearchValue', this.myControl.value, { scopeType: 'User' }).then(() => {});
+        this.setSearchValueToHistory();
 
         this.router.navigate([`/backlog/${goToPathType}/${selectedPath}`]);
     }
