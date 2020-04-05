@@ -11,7 +11,7 @@ import { CommonServiceIds, getClient, IProjectPageService, IExtensionDataService
 import { WorkItemTrackingRestClient, IWorkItemFormNavigationService, WorkItemTrackingServiceIds } from "azure-devops-extension-api/WorkItemTracking";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatWorkItems } from './formatWorkItems';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 export class DynamicFlatNode {
   constructor(public item: any, public level: number = 1, public expandable: boolean = false, public isLoading: boolean = false, public children: any = []) {}
@@ -248,7 +248,7 @@ export class BacklogComponent implements OnInit {
     message:string;
     backlogTypeChecked: boolean;
     backlogType: string;
-    assignedToControl = new FormControl('', [Validators.required]);
+    assignedToControl = new FormControl('');
     assignedToSaveEnabled: boolean = false;
 
     private _dataManager?: IExtensionDataManager;

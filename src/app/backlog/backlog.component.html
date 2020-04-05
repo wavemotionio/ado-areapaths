@@ -34,7 +34,7 @@
 </div>
 
 <div fxLayoutAlign="space-between center" *ngIf="!isLoading && dataSource.data.length > 0" fxflex fxLayout="column" fxLayout.gt-sm="row">
-    <form>
+    <!-- <form>
         <mat-form-field>
             <mat-icon matPrefix>assignment_ind</mat-icon>
             <input type="text"
@@ -51,14 +51,13 @@
                     {{option}}
                 </mat-option>
             </mat-autocomplete>
-            <!-- <mat-error *ngIf="assignedToControl.invalid">{{getErrorMessage()}}</mat-error> -->
         </mat-form-field>
         <button mat-icon-button type="submit" color="primary" matTooltip="Set assigned to" aria-label="Set assigned to" (click)="searchByAssignedTo()" [disabled]="!assignedToSaveEnabled">
             <mat-icon>
               save
             </mat-icon>
         </button>
-    </form>
+    </form> -->
     <form>
         <mat-form-field>
             <mat-icon matPrefix>filter_list</mat-icon>
