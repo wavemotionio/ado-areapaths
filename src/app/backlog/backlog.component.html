@@ -44,7 +44,6 @@
 </div>
 <div fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && dataSource.data.length === 0">
     <h4>No Data Found</h4>
-    <h3 *ngIf="errorFound">Azure Error, use Ctrl-F5</h3>
 </div>
 <div style="margin-top:10px;" *ngIf="!isLoading && dataSource.data?.length > 0">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
