@@ -374,7 +374,9 @@ export class BacklogComponent implements OnInit {
             customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' AND ( [System.WorkItemType] = 'Epic' OR [System.WorkItemType] = 'Feature' OR [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story 'OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug') AND [System.State] NOT CONTAINS 'Done' AND [System.State] NOT CONTAINS 'Removed' AND [System.State] NOT CONTAINS 'Closed' AND [System.State] NOT CONTAINS 'Resolved' ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
         }
 
-        this.database.setCustomWIQLQuery(customQuery, isStalledOnly);
+        this.database.setCustomWIQLQuery(customQuery, isStalledOnly).catch(err => {
+            console.log('error found', err);
+        });
     }
 
     filterChanged(filterText: string) {
