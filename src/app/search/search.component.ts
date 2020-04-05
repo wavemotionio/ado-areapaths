@@ -120,12 +120,18 @@ export class SearchComponent implements OnInit {
         }
     }
 
-    viewBacklog(selectedPath, pathTypeChecked) {
-        let goToPathType = pathTypeChecked ? 'iteration' : 'area';
+    async viewBacklog(selectedPath, pathTypeChecked) {
+        const goToPathType = pathTypeChecked ? 'iteration' : 'area',
+            backlogTypeHistory = await this._dataManager.getValue('adoAzurePathsBacklogType', { scopeType: 'User' });
+
+        let stalled = '';
+
+        if (backlogTypeHistory === 'stalled') {
+            stalled = '/stalled';
+        }
 
         this.setSearchValueToHistory();
-
-        this.router.navigate([`/backlog/${goToPathType}/${selectedPath}`]);
+        this.router.navigate([`/backlog/${goToPathType}/${selectedPath}${stalled}`]);
     }
 
     private _filter(value: string): string[] {

@@ -313,16 +313,10 @@ export class BacklogComponent implements OnInit {
             this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'stalled', { scopeType: 'User' }).then(() => {});
             this.setAreaPathData(azurePath, pathType);
         } else {
-            let backlogTypeHistory = await this._dataManager.getValue('adoAzurePathsBacklogType', { scopeType: 'User' });
-
-            if (backlogTypeHistory === 'stalled') {
-                this.router.navigate(["./stalled"], { relativeTo: this._Activatedroute });
-            } else {
-                this.backlogTypeChecked = false;
-                this.backlogType = 'In Progress';
-                this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'inprogress', { scopeType: 'User' }).then(() => {});
-                this.setAreaPathData(azurePath, pathType);
-            }
+            this.backlogTypeChecked = false;
+            this.backlogType = 'In Progress';
+            this._dataManager!.setValue<string>('adoAzurePathsBacklogType', 'inprogress', { scopeType: 'User' }).then(() => {});
+            this.setAreaPathData(azurePath, pathType);
         }
     }
 
