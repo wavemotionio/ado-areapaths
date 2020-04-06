@@ -36,26 +36,15 @@
 <div fxLayoutAlign="space-between center" *ngIf="!isLoading && dataSource.data.length > 0" fxflex fxLayout="column" fxLayout.gt-sm="row">
     <form>
         <mat-form-field>
-            <mat-icon matPrefix>assignment_ind</mat-icon>
-            <input type="text"
-            placeholder="Search by 'Assigned To'"
-            aria-label="Search by assigned to"
-            matInput
-            [formControl]="assignedToControl"
-            [matAutocomplete]="auto">
-            <button mat-button type="button" *ngIf="assignedToControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearAssignedToValue()" tabindex="-1">
-                <mat-icon>close</mat-icon>
-            </button>
-            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-label>Assigned To</mat-label>
+            <mat-select [formControl]="assignedToControl" name="assignedTo">
                 <mat-option *ngFor="let option of userList | async" [value]="option">
                     {{option}}
                 </mat-option>
-            </mat-autocomplete>
+            </mat-select>
         </mat-form-field>
         <button mat-icon-button type="submit" color="primary" matTooltip="Set assigned to" aria-label="Set assigned to" (click)="searchByAssignedTo()" [disabled]="!assignedToSaveEnabled">
-            <mat-icon>
-              save
-            </mat-icon>
+            <mat-icon>save</mat-icon>
         </button>
     </form>
     <form>

@@ -252,8 +252,7 @@ export class BacklogComponent implements OnInit {
     assignedToControl = new FormControl('');
     assignedToSaveEnabled: boolean = false;
     searchPathType: string;
-    userList: Observable<string[]>;
-    optionsJSON: string[];
+    userList: string[];
 
     private _dataManager?: IExtensionDataManager;
 
@@ -297,15 +296,14 @@ export class BacklogComponent implements OnInit {
         let azurePath = this._Activatedroute.snapshot.params['azurepath'],
             pathType = this._Activatedroute.snapshot.params['pathtype'];
 
-        this.optionsJSON = ['1', '2', '3', '4', '5']; // populate with JSON
-
+        this.userList = ['All', 'Me', 'Unassigned'];
         this.rootDataSourceService.currentMessage.subscribe(message => this.message = message);
         this.rootDataSourceService.changeMessage('Path: ' + azurePath);
 
         this._Activatedroute.queryParams
             .subscribe(async params => {
-                let queryParam =_.clone(params.assignedto) || null,
-                    userInput = this.assignedToControl.value.trim() || null;
+                let queryParam = _.clone(params.assignedto) || 'All',
+                    userInput = this.assignedToControl.value;
 
                 if (queryParam !== userInput) {
                     this.assignedToControl.setValue(decodeURIComponent(queryParam));
@@ -339,18 +337,6 @@ export class BacklogComponent implements OnInit {
         this.database.isLoadingPage.subscribe(isLoading => this.isLoading = isLoading);
 
         this.setState();
-
-        this.userList = this.assignedToControl.valueChanges
-          .pipe(
-            startWith(''),
-            map(value => this._filter(value))
-          );
-    }
-
-    private _filter(value: string): string[] {
-        const filterValue = value.toLowerCase();
-
-        return this.optionsJSON.filter(option => option.toLowerCase().includes(filterValue));
     }
 
     setState() {
@@ -420,7 +406,13 @@ export class BacklogComponent implements OnInit {
             systemPathType = 'IterationPath';
         }
 
-        let assignedToQuery = assignedto ? `AND [System.AssignedTo] = @Me ` : ''; // add exception for 'unassigned'
+        const assignedToTypes = {
+            All: '',
+            Me: 'AND [System.AssignedTo] = @Me ',
+            Unassigned: `AND [System.AssignedTo] = '${assignedto}' `
+        };
+
+        let assignedToQuery = assignedToTypes[assignedto] || '';
 
         if (isStalledOnly) {
             customQuery = `SELECT [System.Id] FROM WorkItems WHERE [System.${systemPathType}] UNDER '${azurePath}' ${assignedToQuery}AND ( [System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Requirement' OR [System.WorkItemType] = 'Bug' ) AND ( [System.State] CONTAINS 'Committed' OR [System.State] CONTAINS 'Active' ) ORDER BY [System.AreaPath] ASC, [System.WorkItemType] ASC, [Microsoft.VSTS.Common.Priority] ASC`;
@@ -435,8 +427,6 @@ export class BacklogComponent implements OnInit {
     }
 
     searchByAssignedTo() {
-        this.assignedToControl.setValue(this.assignedToControl.value.trim());
-
         this.router.navigate(
           [], 
           {
@@ -445,10 +435,6 @@ export class BacklogComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge'
           });
-    }
-
-    clearAssignedToValue() {
-        this.assignedToControl.setValue('');
     }
 
     filterChanged(filterText: string) {
