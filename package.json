@@ -13,7 +13,9 @@
     "commit": "git add package.json && git add vss-extension.json && git commit -m \"ci: patch version\"",
     "test": "",
     "lint": "",
-    "e2e": ""
+    "e2e": "",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "private": true,
   "license": "MIT",
@@ -39,7 +41,8 @@
     "lodash": "^4.17.15",
     "rxjs": "^6.5.4",
     "vss-web-extension-sdk": "^5.141.0",
-    "zone.js": "^0.10.3"
+    "zone.js": "^0.10.3",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.901.0",
@@ -60,5 +63,6 @@
     "ignore": [
       "typescript"
     ]
-  }
+  },
+  "snyk": true
 }
